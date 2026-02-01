@@ -1,0 +1,23 @@
+[project]
+name = "nexus"
+version = "0.1.0"
+description = "Nexus is a framework which simplifies the analysis of electrophysiology data"
+authors = [
+    {name = "Fernan-hub",email = "fangelesbenavides@gmail.com"}
+]
+requires-python = ">=3.12"
+dependencies = [
+    "neo (>=0.14.3,<0.15.0)",
+    "elephant (>=1.1.1,<2.0.0)",
+    "infomeasure (>=0.5.1,<0.6.0)"
+]
+
+[dependency-groups]
+dev = [
+    "mypy (>=1.19.1,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
