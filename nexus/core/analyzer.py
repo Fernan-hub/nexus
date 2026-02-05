@@ -1,6 +1,6 @@
 from nexus.core.neuro_data import NeuroData
 from nexus.interfaces.analysis_strategy import AnalysisStrategy
-from nexus.models.analysis_result import AnalysisResult
+from nexus.models.results import AnalysisResult
 from nexus.models.criteria import Criteria
 
 

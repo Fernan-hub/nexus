@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Sequence
 
-from nexus.models.analysis_result import AnalysisResult
+from nexus.models.results import AnalysisResult
 
 
 class AnalysisStrategy(ABC):
