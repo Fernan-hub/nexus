@@ -1,6 +1,4 @@
-from dataclasses import dataclass
+from typing import Any
 
-
-@dataclass
-class Criteria:
-    pass
+SingleCriteria = dict[str, Any]
+Criteria = SingleCriteria | list[SingleCriteria]

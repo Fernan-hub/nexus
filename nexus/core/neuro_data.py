@@ -1,28 +1,45 @@
-from typing import Any, Sequence
-import neo
+from neo.core import Block
 
-from interfaces.data_loader import DataLoader
-from nexus.interfaces.annotation_strategy import AnnotationStrategy
+from nexus.core.interfaces.annotated_item import AnnotatedItem
+from nexus.core.interfaces.annotation_strategy import AnnotationStrategy
+from nexus.core.interfaces.data_loader import DataLoader
+from nexus.core.interfaces.signal_proxy import SignalProxy
+from nexus.core.proxies import NeoSignalProxy
 from nexus.models.criteria import Criteria
 
 
 class NeuroData:
-    def __init__(self, block: neo.Block | None = None) -> None:
-        self.__block = block if block is not None else neo.Block()
+    def __init__(self) -> None:
+        self.__proxy_registry: dict[str, SignalProxy] = {}
 
-    def get_all_signals(self) -> list[Any]:
-        return []
+    def __matches_criteria(self, proxy: SignalProxy, criteria: Criteria) -> bool:
+        # TODO: Implement actual matching logic based on the criteria
+        return True
 
-    def get_signals_by_criteria(self, criteria: Criteria) -> list[Any]:
-        return []
+    def get_proxies_by_criteria(self, criteria: Criteria) -> list[SignalProxy]:
+        return [
+            proxy
+            for proxy in self.__proxy_registry.values()
+            if self.__matches_criteria(proxy, criteria)
+        ]
 
-    def remove_signals(self, signals: Sequence[Any]) -> None:
-        pass
+    def get_proxy_by_id(self, proxy_id: str) -> SignalProxy | None:
+        return self.__proxy_registry.get(proxy_id)
 
-    def add_signals(self, signals: Sequence[Any]) -> None:
-        pass
+    def register_proxy(self, proxy: SignalProxy) -> None:
+        self.__proxy_registry[proxy.id] = proxy
 
-    def load_from_file(self, loader: DataLoader, annotator: AnnotationStrategy) -> None:
-        seg = loader.load()
-        annotator.annotate(seg)
-        self.__block.segments.append(seg)
+    def load_from_file(
+        self, data_loader: DataLoader, annotation_strategy: AnnotationStrategy
+    ) -> None:
+        proxies = data_loader.load_data()
+        signal_proxies: list[AnnotatedItem] = []
+        for proxy in proxies:
+            signal_proxy = NeoSignalProxy(proxy)
+            self.register_proxy(signal_proxy)
+            signal_proxies.append(signal_proxy)
+        annotation_strategy.annotate(signal_proxies)
+
+    def to_neo_block(self) -> Block:
+        # TODO: Implement conversion to Neo block
+        return Block()
