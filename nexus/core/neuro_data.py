@@ -1,4 +1,5 @@
 from neo.core import Block
+from neo.core.container import filterdata
 
 from nexus.core.interfaces.annotated_item import AnnotatedItem
 from nexus.core.interfaces.annotation_strategy import AnnotationStrategy
@@ -10,24 +11,16 @@ from nexus.models.criteria import Criteria
 
 class NeuroData:
     def __init__(self) -> None:
-        self.__proxy_registry: dict[str, SignalProxy] = {}
-
-    def __matches_criteria(self, proxy: SignalProxy, criteria: Criteria) -> bool:
-        # TODO: Implement actual matching logic based on the criteria
-        return True
+        self._proxy_registry: dict[str, SignalProxy] = {}
 
     def get_proxies_by_criteria(self, criteria: Criteria) -> list[SignalProxy]:
-        return [
-            proxy
-            for proxy in self.__proxy_registry.values()
-            if self.__matches_criteria(proxy, criteria)
-        ]
+        return filterdata(self._proxy_registry.values(), criteria)
 
     def get_proxy_by_id(self, proxy_id: str) -> SignalProxy | None:
-        return self.__proxy_registry.get(proxy_id)
+        return self._proxy_registry.get(proxy_id)
 
     def register_proxy(self, proxy: SignalProxy) -> None:
-        self.__proxy_registry[proxy.id] = proxy
+        self._proxy_registry[proxy.id] = proxy
 
     def load_from_file(
         self, data_loader: DataLoader, annotation_strategy: AnnotationStrategy
