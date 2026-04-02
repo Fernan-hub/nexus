@@ -18,6 +18,7 @@ class NeoSignalProxy(SignalProxy):
 
 class ComputedSignalProxy(SignalProxy):
     def __init__(self, operation_node: OperationNode) -> None:
+        super().__init__()
         self._operation_node = operation_node
 
     def _matches_annotations(self, signal: DataObject) -> bool:

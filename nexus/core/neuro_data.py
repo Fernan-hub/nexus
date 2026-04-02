@@ -13,7 +13,7 @@ class NeuroData:
     def __init__(self) -> None:
         self._proxy_registry: dict[str, SignalProxy] = {}
 
-    def get_proxies_by_criteria(self, criteria: Criteria) -> list[SignalProxy]:
+    def get_proxies_by_criteria(self, criteria: Criteria | None) -> list[SignalProxy]:
         return filterdata(self._proxy_registry.values(), criteria)
 
     def get_proxy_by_id(self, proxy_id: str) -> SignalProxy | None:
@@ -21,6 +21,10 @@ class NeuroData:
 
     def register_proxy(self, proxy: SignalProxy) -> None:
         self._proxy_registry[proxy.id] = proxy
+
+    def register_proxies(self, proxies: list[SignalProxy]) -> None:
+        for proxy in proxies:
+            self.register_proxy(proxy)
 
     def load_from_file(
         self, data_loader: DataLoader, annotation_strategy: AnnotationStrategy
