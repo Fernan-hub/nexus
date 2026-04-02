@@ -12,7 +12,7 @@ class Processor:
         self,
         processing_strategy: ProcessingStrategy,
         annotation_strategy: AnnotationStrategy,
-        criteria: Criteria | None,
+        criteria: Criteria | None = None,
     ) -> None:
         proxies = self._data.get_proxies_by_criteria(criteria)
         computed_proxies = processing_strategy.defer_application(
