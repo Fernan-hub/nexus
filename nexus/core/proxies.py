@@ -21,8 +21,7 @@ class ComputedSignalProxy(SignalProxy):
         self._operation_node = operation_node
 
     def _matches_annotations(self, signal: DataObject) -> bool:
-        # TODO: Implement actual annotation matching logic here
-        return True
+        return self.annotations == signal.annotations
 
     def load(self) -> DataObject:
         if self._cache is None:
