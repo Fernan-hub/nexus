@@ -2,9 +2,9 @@ from neo.core import Block
 from neo.core.container import filterdata
 
 from nexus.annotation.interfaces import AnnotationStrategy
-from nexus.core.interfaces.data_loader import DataLoader
-from nexus.core.interfaces.signal_proxy import SignalProxy
+from nexus.core.interfaces import SignalProxy
 from nexus.core.proxies import NeoSignalProxy
+from nexus.loading.interfaces import DataLoader
 from nexus.protocols import AnnotatedItem
 from nexus.types import Criteria
 

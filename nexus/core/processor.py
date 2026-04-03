@@ -1,6 +1,6 @@
 from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.core.neuro_data import NeuroData
-from nexus.core.interfaces.processing_strategy import ProcessingStrategy
+from nexus.processing.interfaces import ProcessingStrategy
 from nexus.types import Criteria
 
 

@@ -1,8 +1,8 @@
 from neo.core.dataobject import DataObject
 
 from nexus.annotation.interfaces import AnnotationStrategy
-from nexus.core.interfaces.processing_strategy import ProcessingStrategy
-from nexus.core.interfaces.signal_proxy import SignalProxy
+from nexus.core.interfaces import SignalProxy
+from nexus.processing.interfaces import ProcessingStrategy
 
 
 class OperationNode:

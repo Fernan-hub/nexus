@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
+from neo.core.dataobject import DataObject
 
-
-from nexus.core.interfaces.exporter_strategy import ExporterStrategy
+from nexus.exporting.interfaces import ExporterStrategy
 
 
 class AnalysisResult(ABC):
@@ -10,4 +10,10 @@ class AnalysisResult(ABC):
 
     @abstractmethod
     def accept(self, exporter_strategy: ExporterStrategy) -> None:
+        pass
+
+
+class AnalysisStrategy(ABC):
+    @abstractmethod
+    def run_analysis(self, signals: list[DataObject]) -> AnalysisResult:
         pass

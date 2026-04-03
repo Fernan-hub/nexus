@@ -1,4 +1,4 @@
-from nexus.core.interfaces.analysis_strategy import AnalysisStrategy
+from nexus.analysis.interfaces import AnalysisStrategy
 from nexus.core.lazy_analysis_result import LazyAnalysisResult
 from nexus.core.neuro_data import NeuroData
 from nexus.types import Criteria

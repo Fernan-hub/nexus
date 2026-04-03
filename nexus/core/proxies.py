@@ -1,7 +1,7 @@
 from neo.core.dataobject import DataObject
 from neo.io.proxyobjects import BaseProxy
 
-from nexus.core.interfaces.signal_proxy import SignalProxy
+from nexus.core.interfaces import SignalProxy
 from nexus.core.operation_node import OperationNode
 
 
