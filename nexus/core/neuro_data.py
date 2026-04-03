@@ -1,5 +1,7 @@
 from neo.core import Block
 from neo.core.container import filterdata
+from neo.core.dataobject import DataObject
+from neo.io.proxyobjects import BaseProxy
 
 from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.core.interfaces import SignalProxy
@@ -29,10 +31,15 @@ class NeuroData:
     def load_from_file(
         self, data_loader: DataLoader, annotation_strategy: AnnotationStrategy
     ) -> None:
-        proxies = data_loader.load_data()
+        loaded_data = data_loader.load_data()
         signal_proxies: list[AnnotatedItem] = []
-        for proxy in proxies:
-            signal_proxy = NeoSignalProxy(proxy)
+        for data in loaded_data:
+            if isinstance(data, BaseProxy):
+                signal_proxy = NeoSignalProxy(neo_proxy=data)
+            elif isinstance(data, DataObject):
+                signal_proxy = NeoSignalProxy(data_object=data)
+            else:
+                continue
             self.register_proxy(signal_proxy)
             signal_proxies.append(signal_proxy)
         annotation_strategy.annotate(signal_proxies)

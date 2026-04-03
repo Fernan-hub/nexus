@@ -6,13 +6,23 @@ from nexus.core.operation_node import OperationNode
 
 
 class NeoSignalProxy(SignalProxy):
-    def __init__(self, neo_proxy: BaseProxy) -> None:
+    def __init__(
+        self, neo_proxy: BaseProxy | None = None, data_object: DataObject | None = None
+    ) -> None:
         super().__init__()
-        self._native_proxy = neo_proxy
+        if neo_proxy is None and data_object is None:
+            # TODO: Raise a more specific exception here
+            raise ValueError("Either neo_proxy or data_object must be provided.")
+        self._native_proxy: BaseProxy | None = neo_proxy
+        self._data_object: DataObject | None = data_object
 
     def load(self) -> DataObject:
         if self._cache is None:
-            self._cache: DataObject = self._native_proxy.load()
+            self._cache: DataObject = (
+                self._native_proxy.load()
+                if self._native_proxy is not None
+                else self._data_object
+            )
         return self._cache
 
 
