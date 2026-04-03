@@ -1,12 +1,12 @@
 from neo.core import Block
 from neo.core.container import filterdata
 
-from nexus.core.interfaces.annotated_item import AnnotatedItem
-from nexus.core.interfaces.annotation_strategy import AnnotationStrategy
+from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.core.interfaces.data_loader import DataLoader
 from nexus.core.interfaces.signal_proxy import SignalProxy
 from nexus.core.proxies import NeoSignalProxy
-from nexus.models.criteria import Criteria
+from nexus.protocols import AnnotatedItem
+from nexus.types import Criteria
 
 
 class NeuroData:

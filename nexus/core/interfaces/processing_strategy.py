@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from neo.core.dataobject import DataObject
 
-from nexus.core.interfaces.annotation_strategy import AnnotationStrategy
+from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.core.interfaces.signal_proxy import SignalProxy
 
 

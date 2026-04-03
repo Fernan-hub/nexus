@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from nexus.core.interfaces.annotated_item import AnnotatedItem
+from nexus.protocols import AnnotatedItem
 
 
 class AnnotationStrategy(ABC):
