@@ -18,6 +18,14 @@ class NeuroData:
     def get_proxies_by_criteria(self, criteria: Criteria | None) -> list[SignalProxy]:
         return filterdata(self._proxy_registry.values(), criteria)
 
+    def get_proxies_by_criteria_dict(
+        self, criteria_dict: dict[str, Criteria]
+    ) -> dict[str, list[SignalProxy]]:
+        return {
+            key: self.get_proxies_by_criteria(criterion)
+            for key, criterion in criteria_dict.items()
+        }
+
     def get_proxy_by_id(self, proxy_id: str) -> SignalProxy | None:
         return self._proxy_registry.get(proxy_id)
 

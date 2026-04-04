@@ -2,16 +2,21 @@ from abc import ABC, abstractmethod
 from neo.core.dataobject import DataObject
 
 from nexus.annotation.interfaces import AnnotationStrategy
-from nexus.core.interfaces.signal_proxy import SignalProxy
+from nexus.core.interfaces import SignalProxy
 
 
 class ProcessingStrategy(ABC):
     @abstractmethod
     def defer_application(
-        self, signal_proxies: list[SignalProxy], annotation_strategy: AnnotationStrategy
+        self,
+        annotation_strategy: AnnotationStrategy,
+        *args: list[SignalProxy],
+        **kwargs: list[SignalProxy],
     ) -> list[SignalProxy]:
         pass
 
     @abstractmethod
-    def apply(self, signals: list[DataObject]) -> list[DataObject]:
+    def apply(
+        self, *args: list[SignalProxy], **kwargs: list[DataObject]
+    ) -> list[DataObject]:
         pass

@@ -15,5 +15,7 @@ class AnalysisResult(ABC):
 
 class AnalysisStrategy(ABC):
     @abstractmethod
-    def run_analysis(self, signals: list[DataObject]) -> AnalysisResult:
+    def run_analysis(
+        self, *args: list[DataObject], **kwargs: list[DataObject]
+    ) -> AnalysisResult:
         pass
