@@ -8,5 +8,6 @@ import quantities as pq
 class DataLoaderConfig:
     file_path: str
     sampling_rate: UnitQuantity
+    t_start: UnitTime = 0.0 * pq.s
     units: UnitQuantity
     time_units: UnitTime = pq.s
