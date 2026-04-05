@@ -12,6 +12,9 @@ DataInputT = TypeVar("DataInputT")
 
 
 class ProcessingStrategy(ABC, Generic[ProxyInputT, DataInputT]):
+
+    supported_data_object_types: list[type[DataObject]] = []
+
     @property
     @abstractmethod
     def filter_criteria_type(self) -> type[FilterCriteria]:
@@ -26,6 +29,16 @@ class ProcessingStrategy(ABC, Generic[ProxyInputT, DataInputT]):
     @abstractmethod
     def data_input_type(self) -> type[DataInputT]:
         pass
+
+    def validate_data_objects(self, data_objects: list[DataObject]) -> None:
+        for data_object in data_objects:
+            if not any(
+                issubclass(type(data_object), supported_type)
+                for supported_type in self.supported_data_object_types
+            ):
+                raise TypeError(
+                    f"{type(data_object).__name__} is not supported by {type(self).__name__}"
+                )
 
     @abstractmethod
     def defer_application(
