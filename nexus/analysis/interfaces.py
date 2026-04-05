@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from neo.core.dataobject import DataObject
+from typing import Generic, TypeVar
 
+from nexus.common.interfaces import FilterCriteria
 from nexus.exporting.interfaces import ExporterStrategy
 
 
@@ -13,9 +14,20 @@ class AnalysisResult(ABC):
         pass
 
 
-class AnalysisStrategy(ABC):
+DataInputT = TypeVar("DataInputT")
+
+
+class AnalysisStrategy(ABC, Generic[DataInputT]):
+    @property
     @abstractmethod
-    def run_analysis(
-        self, *args: list[DataObject], **kwargs: list[DataObject]
-    ) -> AnalysisResult:
+    def filter_criteria_type(self) -> type[FilterCriteria]:
+        pass
+
+    @property
+    @abstractmethod
+    def data_input_type(self) -> type[DataInputT]:
+        pass
+
+    @abstractmethod
+    def run_analysis(self, inputs: DataInputT) -> AnalysisResult:
         pass

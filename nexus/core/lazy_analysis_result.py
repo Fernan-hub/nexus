@@ -6,7 +6,7 @@ from nexus.exporting.interfaces import ExporterStrategy
 class LazyAnalysisResult:
     def __init__(
         self,
-        input_proxies: list[SignalProxy] | dict[str, list[SignalProxy]],
+        input_proxies: dict[str, list[SignalProxy]],
         analysis_strategy: AnalysisStrategy,
     ):
         self._input_proxies = input_proxies
@@ -14,15 +14,12 @@ class LazyAnalysisResult:
         self._analysis_result: AnalysisResult | None = None
 
     def _compute(self) -> None:
-        if isinstance(self._input_proxies, dict):
-            signals_dict = {
-                key: [proxy.load() for proxy in proxies]
-                for key, proxies in self._input_proxies.items()
-            }
-            self._analysis_result = self._analysis_strategy.run_analysis(**signals_dict)
-        else:
-            signals = [proxy.load() for proxy in self._input_proxies]
-            self._analysis_result = self._analysis_strategy.run_analysis(signals)
+        signals_dict = {
+            key: [proxy.load() for proxy in proxies]
+            for key, proxies in self._input_proxies.items()
+        }
+        input_data = self._analysis_strategy.data_input_type(**signals_dict)
+        self._analysis_result = self._analysis_strategy.run_analysis(input_data)
 
     def accept(self, exporter_strategy: ExporterStrategy) -> None:
         if self._analysis_result is None:

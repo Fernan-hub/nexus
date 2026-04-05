@@ -1,7 +1,7 @@
 from nexus.analysis.interfaces import AnalysisStrategy
+from nexus.common.interfaces import FilterCriteria
 from nexus.core.lazy_analysis_result import LazyAnalysisResult
 from nexus.core.neuro_data import NeuroData
-from nexus.types import Criteria, is_criteria
 
 
 class Analyzer:
@@ -9,10 +9,10 @@ class Analyzer:
         self._data = data
 
     def analyze_data(
-        self, analysis_strategy: AnalysisStrategy, criteria: Criteria | None = None
+        self, analysis_strategy: AnalysisStrategy, filter_criteria: FilterCriteria
     ) -> LazyAnalysisResult:
-        if isinstance(criteria, dict) and not is_criteria(criteria):
-            input_proxies = self._data.get_proxies_by_criteria_dict(criteria)
-        else:
-            input_proxies = self._data.get_proxies_by_criteria(criteria)
+        input_proxies = self._data.get_proxies_by_criteria_dict(
+            filter_criteria.to_dict()
+        )
+
         return LazyAnalysisResult(input_proxies, analysis_strategy)

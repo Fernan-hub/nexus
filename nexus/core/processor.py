@@ -1,7 +1,7 @@
 from nexus.annotation.interfaces import AnnotationStrategy
+from nexus.common.interfaces import FilterCriteria
 from nexus.core.neuro_data import NeuroData
 from nexus.processing.interfaces import ProcessingStrategy
-from nexus.types import Criteria, is_criteria
 
 
 class Processor:
@@ -12,17 +12,14 @@ class Processor:
         self,
         processing_strategy: ProcessingStrategy,
         annotation_strategy: AnnotationStrategy,
-        criteria: dict[str, Criteria] | Criteria | None = None,
+        filter_criteria: FilterCriteria,
     ) -> None:
-        if isinstance(criteria, dict) and not is_criteria(criteria):
-            proxies_by_criteria = self._data.get_proxies_by_criteria_dict(criteria)
-            computed_proxies = processing_strategy.defer_application(
-                annotation_strategy, **proxies_by_criteria
-            )
-        else:
-            proxies = self._data.get_proxies_by_criteria(criteria)
-            computed_proxies = processing_strategy.defer_application(
-                annotation_strategy, proxies
-            )
+        proxies_by_criteria = self._data.get_proxies_by_criteria_dict(
+            filter_criteria.to_dict()
+        )
+        input_proxies = processing_strategy.proxy_input_type(**proxies_by_criteria)
+        computed_proxies = processing_strategy.defer_application(
+            input_proxies, annotation_strategy
+        )
         annotation_strategy.annotate(computed_proxies)
         self._data.register_proxies(computed_proxies)
