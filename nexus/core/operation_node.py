@@ -8,7 +8,7 @@ from nexus.processing.interfaces import ProcessingStrategy
 class OperationNode:
     def __init__(
         self,
-        parent_proxies: list[SignalProxy],
+        parent_proxies: dict[str, list[SignalProxy]],
         processing_strategy: ProcessingStrategy,
         annotation_strategy: AnnotationStrategy,
     ) -> None:
@@ -21,8 +21,12 @@ class OperationNode:
         if self._signals_cache is not None:
             return self._signals_cache
 
-        parent_signals = [proxy.load() for proxy in self._parent_proxies]
-        processed_signals = self._processing_strategy.apply(parent_signals)
+        parent_signals = {
+            key: [proxy.load() for proxy in proxies]
+            for key, proxies in self._parent_proxies.items()
+        }
+        input_data = self._processing_strategy.data_input_type(**parent_signals)
+        processed_signals = self._processing_strategy.apply(input_data)
         self._annotation_strategy.annotate(processed_signals)
         self._signals_cache = processed_signals
         return self._signals_cache

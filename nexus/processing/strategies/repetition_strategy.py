@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
@@ -60,10 +60,14 @@ class RepetitionStrategy(
         inputs: RepetitionStrategyProxyInput,
         annotation_strategy: AnnotationStrategy,
     ) -> list[SignalProxy]:
-        return [
-            ComputedSignalProxy(OperationNode([proxy], self, annotation_strategy))
-            for proxy in inputs.inputs
-        ]
+        output_proxies = []
+        for proxy in inputs.inputs:
+            parent_proxies = RepetitionStrategyProxyInput(inputs=[proxy])
+            operation_node = OperationNode(
+                asdict(parent_proxies), self, annotation_strategy
+            )
+            output_proxies.append(ComputedSignalProxy(operation_node))
+        return output_proxies
 
     def _concatenate_repetitions(self, signal: AnalogSignal) -> AnalogSignal:
         shifted_copies = []

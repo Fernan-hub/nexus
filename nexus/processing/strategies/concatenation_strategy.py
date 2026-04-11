@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
@@ -53,7 +53,7 @@ class ConcatenationStrategy(
         inputs: ConcatenationStrategyProxyInput,
         annotation_strategy: AnnotationStrategy,
     ) -> list[SignalProxy]:
-        operation_node = OperationNode(inputs.inputs, self, annotation_strategy)
+        operation_node = OperationNode(asdict(inputs), self, annotation_strategy)
         return [ComputedSignalProxy(operation_node)]
 
     def apply(self, inputs: ConcatenationStrategyDataInput) -> list[DataObject]:
