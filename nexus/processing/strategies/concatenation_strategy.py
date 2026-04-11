@@ -1,13 +1,12 @@
 from dataclasses import dataclass, asdict
+from typing import Any
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
 
-from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.common.interfaces import FilterCriteria
 from nexus.core.interfaces import SignalProxy
-from nexus.core.operation_node import OperationNode
-from nexus.core.proxies import ComputedSignalProxy
+from nexus.models import NodeDefinition
 from nexus.processing.interfaces import ProcessingStrategy
 from nexus.types import Criteria
 
@@ -48,18 +47,29 @@ class ConcatenationStrategy(
     def data_input_type(self) -> type[ConcatenationStrategyDataInput]:
         return ConcatenationStrategyDataInput
 
-    def defer_application(
-        self,
-        inputs: ConcatenationStrategyProxyInput,
-        annotation_strategy: AnnotationStrategy,
-    ) -> list[SignalProxy]:
-        operation_node = OperationNode(asdict(inputs), self, annotation_strategy)
-        return [ComputedSignalProxy(operation_node)]
+    def _infer_annotations(self, proxies: list[SignalProxy]) -> dict[str, Any]:
+        proxies_annotations: list[set[tuple[str, Any]]] = []
+        for proxy in proxies:
+            proxies_annotations.append(set(proxy.annotations.items()))
+        common_annotations: dict[str, Any] = dict(
+            set.intersection(*proxies_annotations)
+        )
+        return {**common_annotations, "concatenated": True}
 
-    def apply(self, inputs: ConcatenationStrategyDataInput) -> list[DataObject]:
-        self.validate_data_objects(inputs.inputs)
+    def infer_execution_plan(
+        self, input_proxies: ConcatenationStrategyProxyInput
+    ) -> list[NodeDefinition]:
+        return [
+            NodeDefinition(
+                input_proxies_dict=asdict(input_proxies),
+                output_annotations=self._infer_annotations(input_proxies.inputs),
+            )
+        ]
 
-        ordered_signals = sorted(inputs.inputs, key=lambda signal: signal.t_start)
+    def apply(self, input_data: ConcatenationStrategyDataInput) -> list[DataObject]:
+        self.validate_data_objects(input_data.inputs)
+
+        ordered_signals = sorted(input_data.inputs, key=lambda signal: signal.t_start)
         first_signal: AnalogSignal = ordered_signals[0]
         concatenated_signal = first_signal.concatenate(*ordered_signals[1:])
         return [concatenated_signal]

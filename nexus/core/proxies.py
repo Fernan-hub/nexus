@@ -1,3 +1,5 @@
+from typing import Any
+
 from neo.core.dataobject import DataObject
 from neo.io.proxyobjects import BaseProxy
 
@@ -27,24 +29,19 @@ class NeoSignalProxy(SignalProxy):
 
 
 class ComputedSignalProxy(SignalProxy):
-    def __init__(self, operation_node: OperationNode) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        operation_node: OperationNode,
+        output_index: int,
+        annotations: dict[str, Any],
+    ) -> None:
+        super().__init__(annotations=annotations)
         self._operation_node = operation_node
-
-    def _matches_annotations(self, signal: DataObject) -> bool:
-        return self.annotations == signal.annotations
+        self._output_index = output_index
 
     def load(self) -> DataObject:
         if self._cache is None:
-            sibling_signals = self._operation_node.compute()
-            for signal in sibling_signals:
-                if self._matches_annotations(signal):
-                    self._cache = signal
-                    break
-            else:
-                # TODO: Raise a more specific exception here
-                raise ValueError(
-                    "No computed signal matches the annotations of the proxy."
-                )
+            output_signals = self._operation_node.compute()
+            self._cache = output_signals[self._output_index]
 
         return self._cache

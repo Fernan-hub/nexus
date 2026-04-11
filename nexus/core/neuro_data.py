@@ -32,10 +32,6 @@ class NeuroData:
     def register_proxy(self, proxy: SignalProxy) -> None:
         self._proxy_registry[proxy.id] = proxy
 
-    def register_proxies(self, proxies: list[SignalProxy]) -> None:
-        for proxy in proxies:
-            self.register_proxy(proxy)
-
     def load_from_file(
         self, data_loader: DataLoader, annotation_strategy: AnnotationStrategy
     ) -> None:

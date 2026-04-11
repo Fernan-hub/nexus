@@ -1,16 +1,14 @@
 from dataclasses import dataclass, asdict
+from typing import Any
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
 import numpy as np
 from scipy.signal import butter, filtfilt
 
-
-from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.common.interfaces import FilterCriteria
 from nexus.core.interfaces import SignalProxy
-from nexus.core.operation_node import OperationNode
-from nexus.core.proxies import ComputedSignalProxy
+from nexus.models import NodeDefinition
 from nexus.processing.interfaces import ProcessingStrategy
 from nexus.types import Criteria
 
@@ -58,20 +56,22 @@ class BandpassFilterStrategy(
     def data_input_type(self) -> type[BandpassFilterStrategyDataInput]:
         return BandpassFilterStrategyDataInput
 
-    def defer_application(
-        self,
-        inputs: BandpassFilterStrategyProxyInput,
-        annotation_strategy: AnnotationStrategy,
-    ) -> list[SignalProxy]:
-        output_proxies = []
-        for proxy in inputs.inputs:
-            parent_proxies = BandpassFilterStrategyProxyInput(inputs=[proxy])
-            operation_node = OperationNode(
-                asdict(parent_proxies), self, annotation_strategy
-            )
-            output_proxies.append(ComputedSignalProxy(operation_node))
+    def _infer_annotations(self, proxy: SignalProxy) -> dict[str, Any]:
+        return {**proxy.annotations, "filtered": True}
 
-        return output_proxies
+    def infer_execution_plan(
+        self, input_proxies: BandpassFilterStrategyProxyInput
+    ) -> list[NodeDefinition]:
+        node_definitions = []
+        for proxy in input_proxies.inputs:
+            node_input_proxies = BandpassFilterStrategyProxyInput(inputs=[proxy])
+            node_definitions.append(
+                NodeDefinition(
+                    input_proxies_dict=asdict(node_input_proxies),
+                    output_annotations=[self._infer_annotations(proxy)],
+                )
+            )
+        return node_definitions
 
     def _get_butterworth_coefficients(self, fs: float) -> tuple[np.ndarray, np.ndarray]:
         nyquist = fs / 2
@@ -101,11 +101,11 @@ class BandpassFilterStrategy(
             description=data.description,
         )
 
-    def apply(self, inputs: BandpassFilterStrategyDataInput) -> list[DataObject]:
-        self.validate_data_objects(inputs.inputs)
+    def apply(self, input_data: BandpassFilterStrategyDataInput) -> list[DataObject]:
+        self.validate_data_objects(input_data.inputs)
 
         # Assuming all inputs have the same sampling rate
-        fs = inputs.inputs[0].sampling_rate.rescale("Hz").magnitude
+        fs = input_data.inputs[0].sampling_rate.rescale("Hz").magnitude
         b, a = self._get_butterworth_coefficients(fs)
 
-        return [self._filter_data(b, a, data) for data in inputs.inputs]
+        return [self._filter_data(b, a, data) for data in input_data.inputs]

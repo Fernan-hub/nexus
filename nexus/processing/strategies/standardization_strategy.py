@@ -1,14 +1,13 @@
 from dataclasses import dataclass, asdict
+from typing import Any
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
 import numpy as np
 
-from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.common.interfaces import FilterCriteria
 from nexus.core.interfaces import SignalProxy
-from nexus.core.operation_node import OperationNode
-from nexus.core.proxies import ComputedSignalProxy
+from nexus.models import NodeDefinition
 from nexus.processing.interfaces import ProcessingStrategy
 from nexus.types import Criteria
 
@@ -49,25 +48,28 @@ class StandardizationStrategy(
     def data_input_type(self) -> type[StandardizationStrategyDataInput]:
         return StandardizationStrategyDataInput
 
-    def defer_application(
-        self,
-        inputs: StandardizationStrategyProxyInput,
-        annotation_strategy: AnnotationStrategy,
-    ) -> list[SignalProxy]:
-        output_proxies = []
-        for proxy in inputs.inputs:
-            parent_proxies = StandardizationStrategyProxyInput(inputs=[proxy])
-            operation_node = OperationNode(
-                asdict(parent_proxies), self, annotation_strategy
+    def _infer_annotations(self, proxy: SignalProxy) -> dict[str, Any]:
+        return {**proxy.annotations, "standardized": True}
+
+    def infer_execution_plan(
+        self, input_proxies: StandardizationStrategyDataInput
+    ) -> list[NodeDefinition]:
+        node_definitions = []
+        for proxy in input_proxies.inputs:
+            node_input_proxies = StandardizationStrategyDataInput(inputs=[proxy])
+            node_definitions.append(
+                NodeDefinition(
+                    input_proxies_dict=asdict(node_input_proxies),
+                    output_annotations=[self._infer_annotations(proxy)],
+                )
             )
-            output_proxies.append(ComputedSignalProxy(operation_node))
-        return output_proxies
+        return node_definitions
 
     def _standardize(self, data: DataObject) -> DataObject:
         # Divide by std magnitude to preserve units
         return (data - np.mean(data)) / np.std(data).magnitude
 
-    def apply(self, inputs: StandardizationStrategyDataInput) -> list[DataObject]:
-        self.validate_data_objects(inputs.inputs)
+    def apply(self, input_data: StandardizationStrategyDataInput) -> list[DataObject]:
+        self.validate_data_objects(input_data.inputs)
 
-        return [self._standardize(data) for data in inputs.inputs]
+        return [self._standardize(data) for data in input_data.inputs]

@@ -1,13 +1,12 @@
 from dataclasses import dataclass, asdict
+from typing import Any
 
 from neo.core import AnalogSignal
 from neo.core.dataobject import DataObject
 
-from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.common.interfaces import FilterCriteria
 from nexus.core.interfaces import SignalProxy
-from nexus.core.operation_node import OperationNode
-from nexus.core.proxies import ComputedSignalProxy
+from nexus.models import NodeDefinition
 from nexus.processing.interfaces import ProcessingStrategy
 from nexus.types import Criteria
 
@@ -55,19 +54,22 @@ class RepetitionStrategy(
     def data_input_type(self) -> type[RepetitionStrategyDataInput]:
         return RepetitionStrategyDataInput
 
-    def defer_application(
-        self,
-        inputs: RepetitionStrategyProxyInput,
-        annotation_strategy: AnnotationStrategy,
-    ) -> list[SignalProxy]:
-        output_proxies = []
-        for proxy in inputs.inputs:
-            parent_proxies = RepetitionStrategyProxyInput(inputs=[proxy])
-            operation_node = OperationNode(
-                asdict(parent_proxies), self, annotation_strategy
+    def _infer_annotations(self, proxy: SignalProxy) -> dict[str, Any]:
+        return {**proxy.annotations, "repeated": True}
+
+    def infer_execution_plan(
+        self, input_proxies: RepetitionStrategyDataInput
+    ) -> list[NodeDefinition]:
+        node_definitions = []
+        for proxy in input_proxies.inputs:
+            node_input_proxies = RepetitionStrategyDataInput(inputs=[proxy])
+            node_definitions.append(
+                NodeDefinition(
+                    input_proxies_dict=asdict(node_input_proxies),
+                    output_annotations=[self._infer_annotations(proxy)],
+                )
             )
-            output_proxies.append(ComputedSignalProxy(operation_node))
-        return output_proxies
+        return node_definitions
 
     def _concatenate_repetitions(self, signal: AnalogSignal) -> AnalogSignal:
         shifted_copies = []
@@ -79,7 +81,7 @@ class RepetitionStrategy(
 
         return signal.concatenate(*shifted_copies)
 
-    def apply(self, inputs: RepetitionStrategyDataInput) -> list[DataObject]:
-        self.validate_data_objects(inputs.inputs)
+    def apply(self, input_data: RepetitionStrategyDataInput) -> list[DataObject]:
+        self.validate_data_objects(input_data.inputs)
 
-        return [self._concatenate_repetitions(data) for data in inputs.inputs]
+        return [self._concatenate_repetitions(data) for data in input_data.inputs]

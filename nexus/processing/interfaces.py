@@ -6,6 +6,7 @@ from neo.core.dataobject import DataObject
 from nexus.annotation.interfaces import AnnotationStrategy
 from nexus.core.interfaces import SignalProxy
 from nexus.common.interfaces import FilterCriteria
+from nexus.models import NodeDefinition
 
 ProxyInputT = TypeVar("ProxyInputT")
 DataInputT = TypeVar("DataInputT")
@@ -41,11 +42,9 @@ class ProcessingStrategy(ABC, Generic[ProxyInputT, DataInputT]):
                 )
 
     @abstractmethod
-    def defer_application(
-        self, inputs: ProxyInputT, annotation_strategy: AnnotationStrategy
-    ) -> list[SignalProxy]:
+    def infer_execution_plan(self, input_proxies: ProxyInputT) -> list[NodeDefinition]:
         pass
 
     @abstractmethod
-    def apply(self, inputs: DataInputT) -> list[DataObject]:
+    def apply(self, input_data: DataInputT) -> list[DataObject]:
         pass
