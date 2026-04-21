@@ -14,7 +14,7 @@ from nexus.types import Criteria
 
 @dataclass
 class StandardizationStrategyFilterCriteria(FilterCriteria):
-    inputs: list[Criteria] | None = None
+    inputs: Criteria | None = None
 
 
 @dataclass

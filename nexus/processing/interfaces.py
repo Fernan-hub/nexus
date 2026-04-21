@@ -3,8 +3,6 @@ from typing import Generic, TypeVar
 
 from neo.core.dataobject import DataObject
 
-from nexus.annotation.interfaces import AnnotationStrategy
-from nexus.core.interfaces import SignalProxy
 from nexus.common.interfaces import FilterCriteria
 from nexus.models import NodeDefinition
 
