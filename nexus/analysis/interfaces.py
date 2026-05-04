@@ -5,7 +5,7 @@ from typing import Generic, TypeVar, Any
 from infomeasure.utils.types import EstimatorType, LogBaseType
 
 from nexus.common.interfaces import FilterCriteria
-from nexus.exporting.interfaces import ExporterStrategy
+from nexus.exporting.interfaces import ExportationStrategy
 
 
 class AnalysisResult(ABC):
@@ -13,7 +13,7 @@ class AnalysisResult(ABC):
         self.algorithm = algorithm
 
     @abstractmethod
-    def accept(self, exporter_strategy: ExporterStrategy) -> None:
+    def accept(self, exporter_strategy: ExportationStrategy) -> None:
         pass
 
 

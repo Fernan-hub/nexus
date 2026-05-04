@@ -1,6 +1,6 @@
 from nexus.analysis.interfaces import AnalysisResult, AnalysisStrategy
 from nexus.core.interfaces import SignalProxy
-from nexus.exporting.interfaces import ExporterStrategy
+from nexus.exporting.interfaces import ExportationStrategy
 
 
 class LazyAnalysisResult:
@@ -21,7 +21,7 @@ class LazyAnalysisResult:
         input_data = self._analysis_strategy.data_input_type(**signals_dict)
         self._analysis_result = self._analysis_strategy.run_analysis(input_data)
 
-    def accept(self, exporter_strategy: ExporterStrategy) -> None:
+    def accept(self, exporter_strategy: ExportationStrategy) -> None:
         if self._analysis_result is None:
             self._compute()
         self._analysis_result.accept(exporter_strategy)

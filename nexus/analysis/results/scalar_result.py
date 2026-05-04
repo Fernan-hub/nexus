@@ -1,5 +1,5 @@
 from nexus.analysis.interfaces import AnalysisResult
-from nexus.exporting.interfaces import ExporterStrategy
+from nexus.exporting.interfaces import ExportationStrategy
 
 
 class ScalarResult(AnalysisResult):
@@ -7,5 +7,5 @@ class ScalarResult(AnalysisResult):
         super().__init__(algorithm)
         self.scalar = scalar
 
-    def accept(self, exporter_strategy: ExporterStrategy) -> None:
+    def accept(self, exporter_strategy: ExportationStrategy) -> None:
         exporter_strategy.export_scalar_result(self)

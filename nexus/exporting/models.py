@@ -2,5 +2,5 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ExportingStrategyConfig:
+class ExportationStrategyConfig:
     output_file_path: str

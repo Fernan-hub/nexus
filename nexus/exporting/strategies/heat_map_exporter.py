@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from nexus.exporting.interfaces import ExporterStrategy
-from nexus.exporting.models import ExportingStrategyConfig
+from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exporting.models import ExportationStrategyConfig
 from nexus.exporting.mixins import PlotMixin
 
 if TYPE_CHECKING:
@@ -14,12 +14,12 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class HeatMapExporterConfig(ExportingStrategyConfig, PlotMixin):
+class HeatMapExporterConfig(ExportationStrategyConfig, PlotMixin):
     cbar: bool = True
     cmap: str = "viridis"
 
 
-class HeatMapExporter(ExporterStrategy):
+class HeatMapExporter(ExportationStrategy):
     def __init__(self, config: HeatMapExporterConfig) -> None:
         super().__init__(config)
 
