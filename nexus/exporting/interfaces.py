@@ -2,13 +2,15 @@ from abc import ABC
 
 from typing import TYPE_CHECKING
 
+from nexus.exporting.models import ExportingStrategyConfig
+
 if TYPE_CHECKING:
     from nexus.analysis.results import MatrixResult, ScalarResult, VectorResult
 
 
 class ExporterStrategy(ABC):
-    def __init__(self, output_path: str | None) -> None:
-        self.output_path = output_path
+    def __init__(self, config: ExportingStrategyConfig) -> None:
+        self._config = config
 
     def export_matrix_result(self, matrix_result: "MatrixResult") -> None:
         raise NotImplementedError(
