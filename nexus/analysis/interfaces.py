@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from dataclasses import asdict
+from typing import Generic, TypeVar, Any
+
+from infomeasure.utils.types import EstimatorType, LogBaseType
 
 from nexus.common.interfaces import FilterCriteria
 from nexus.exporting.interfaces import ExporterStrategy
@@ -29,5 +32,28 @@ class AnalysisStrategy(ABC, Generic[DataInputT]):
         pass
 
     @abstractmethod
-    def run_analysis(self, inputs: DataInputT) -> AnalysisResult:
+    def run_analysis(self, data_input: DataInputT) -> AnalysisResult:
         pass
+
+
+class EstimatorConfigBase(ABC):
+    base: LogBaseType = 2
+
+    @abstractmethod
+    def get_estimator_class(self) -> EstimatorType:
+        pass
+
+    def get_conditional_estimator_class(self) -> EstimatorType:
+        raise NotImplementedError(
+            "This estimator does not support conditional estimation."
+        )
+
+    def get_estimator_kwargs(self) -> dict[str, Any]:
+        return {k: v for k, v in asdict(self).items() if not k.startswith("_")}
+
+
+class EstimatorBasedAnalysisStrategy(AnalysisStrategy[DataInputT], ABC):
+    def __init__(self, config: EstimatorConfigBase) -> None:
+        self._config = config
+        self._estimator_class = config.get_estimator_class()
+        self._estimator_kwargs = config.get_estimator_kwargs()
