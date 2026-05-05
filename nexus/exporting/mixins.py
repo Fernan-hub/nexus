@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class PlotMixin:
     fig_title: str | None = None
     fig_size: tuple[float, float] | None = None

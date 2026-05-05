@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from quantities.unitquantity import UnitQuantity, UnitTime
 
 import quantities as pq
@@ -8,6 +8,6 @@ import quantities as pq
 class DataLoaderConfig:
     file_path: str
     sampling_rate: UnitQuantity
-    t_start: UnitTime = 0.0 * pq.s
     units: UnitQuantity
-    time_units: UnitTime = pq.s
+    t_start: UnitTime = field(default_factory=lambda: 0.0 * pq.s)
+    time_units: UnitTime = field(default_factory=lambda: pq.s)

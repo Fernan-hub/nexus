@@ -37,7 +37,7 @@ class BandpassFilterStrategy(
 
     supported_data_object_types = [AnalogSignal]
 
-    def __init__(self, low: int = 500, high: int = 3000, order=4) -> None:
+    def __init__(self, low: float = 500, high: float = 3000, order=4) -> None:
         self._low = low
         self._high = high
         self._order = order

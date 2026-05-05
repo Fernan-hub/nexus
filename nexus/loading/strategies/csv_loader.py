@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from neo.core.dataobject import DataObject
 from neo.io.proxyobjects import BaseProxy
 from neo.io import AsciiSignalIO
@@ -6,6 +8,7 @@ from nexus.loading.interfaces import DataLoader
 from nexus.loading.models import DataLoaderConfig
 
 
+@dataclass
 class CSVLoaderConfig(DataLoaderConfig):
     delimiter: str = ","
     use_cols: list[int] | None = None

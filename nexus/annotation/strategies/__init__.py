@@ -1,8 +1,8 @@
 from nexus.annotation.strategies.function_annotator import (
-    FunctionAnnotator,  # noqa: F401
+    FunctionAnnotator,
 )
 from nexus.annotation.strategies.generator_annotator import (
-    GeneratorAnnotator,  # noqa: F401
+    GeneratorAnnotator,
 )
 
 __all__ = [
