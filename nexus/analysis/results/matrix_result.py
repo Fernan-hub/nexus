@@ -1,4 +1,7 @@
 from dataclasses import dataclass, asdict
+from functools import cached_property
+
+import pandas as pd
 
 from nexus.analysis.interfaces import AnalysisResult
 from nexus.exportation.interfaces import ExportationStrategy
@@ -18,6 +21,10 @@ class MatrixResult(AnalysisResult):
     def __init__(self, algorithm: str, matrix: list[MatrixElement]) -> None:
         super().__init__(algorithm)
         self.matrix = matrix
+
+    @cached_property
+    def matrix_df(self) -> pd.DataFrame:
+        return pd.DataFrame([element.to_dict() for element in self.matrix])
 
     def accept(self, exporter_strategy: ExportationStrategy) -> None:
         exporter_strategy.export_matrix_result(self)

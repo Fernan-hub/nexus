@@ -3,9 +3,9 @@ from nexus.exportation.interfaces import ExportationStrategy
 
 
 class ScalarResult(AnalysisResult):
-    def __init__(self, algorithm: str, scalar: float) -> None:
+    def __init__(self, algorithm: str, value: float) -> None:
         super().__init__(algorithm)
-        self.scalar = scalar
+        self.value = value
 
     def accept(self, exporter_strategy: ExportationStrategy) -> None:
         exporter_strategy.export_scalar_result(self)

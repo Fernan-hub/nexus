@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import seaborn as sns
 
 from nexus.exportation.interfaces import ExportationStrategy
@@ -10,7 +9,7 @@ from nexus.exportation.models import ExportationStrategyConfig
 from nexus.exportation.mixins import PlotMixin
 
 if TYPE_CHECKING:
-    from nexus.analysis.results import MatrixResult, ScalarResult, VectorResult
+    from nexus.analysis.results import MatrixResult
 
 
 @dataclass
@@ -24,12 +23,9 @@ class HeatMapExporter(ExportationStrategy):
         super().__init__(config)
 
     def export_matrix_result(self, matrix_result: "MatrixResult") -> None:
-        matrix_df = pd.DataFrame(
-            [element.to_dict() for element in matrix_result.matrix]
-        )
-        matrix_df_pivot = matrix_df.pivot(
+        matrix_df_pivot = matrix_result.matrix_df.pivot(
             index="row",
-            columns="col",
+            columns="column",
             values="value",
         )
         sns.heatmap(
@@ -45,15 +41,5 @@ class HeatMapExporter(ExportationStrategy):
         if self._config.tight_layout:
             plt.tight_layout()
 
-        plt.savefig(self._config.output_file_path)
+        plt.savefig(self._get_output_file_path(matrix_result))
         plt.clf()
-
-    def export_vector_result(self, vector_result: "VectorResult") -> None:
-        raise NotImplementedError(
-            "HeatMapExporter does not support exporting vector results."
-        )
-
-    def export_scalar_result(self, scalar_result: "ScalarResult") -> None:
-        raise NotImplementedError(
-            "HeatMapExporter does not support exporting scalar results."
-        )
