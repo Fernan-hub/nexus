@@ -5,7 +5,7 @@ from typing import Generic, TypeVar, Any
 from infomeasure.utils.types import EstimatorType, LogBaseType
 
 from nexus.common.interfaces import FilterCriteria
-from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exportation.interfaces import ExportationStrategy
 
 
 class AnalysisResult(ABC):

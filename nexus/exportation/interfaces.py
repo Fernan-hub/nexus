@@ -2,7 +2,7 @@ from abc import ABC
 
 from typing import TYPE_CHECKING
 
-from nexus.exporting.models import ExportationStrategyConfig
+from nexus.exportation.models import ExportationStrategyConfig
 
 if TYPE_CHECKING:
     from nexus.analysis.results import MatrixResult, ScalarResult, VectorResult

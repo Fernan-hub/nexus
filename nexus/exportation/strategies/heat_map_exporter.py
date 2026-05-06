@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from nexus.exporting.interfaces import ExportationStrategy
-from nexus.exporting.models import ExportationStrategyConfig
-from nexus.exporting.mixins import PlotMixin
+from nexus.exportation.interfaces import ExportationStrategy
+from nexus.exportation.models import ExportationStrategyConfig
+from nexus.exportation.mixins import PlotMixin
 
 if TYPE_CHECKING:
     from nexus.analysis.results import MatrixResult, ScalarResult, VectorResult

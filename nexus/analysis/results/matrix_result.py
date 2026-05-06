@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict
 
 from nexus.analysis.interfaces import AnalysisResult
-from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exportation.interfaces import ExportationStrategy
 
 
 @dataclass

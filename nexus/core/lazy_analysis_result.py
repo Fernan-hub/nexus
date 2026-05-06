@@ -1,6 +1,6 @@
 from nexus.analysis.interfaces import AnalysisResult, AnalysisStrategy
 from nexus.core.interfaces import SignalProxy
-from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exportation.interfaces import ExportationStrategy
 
 
 class LazyAnalysisResult:

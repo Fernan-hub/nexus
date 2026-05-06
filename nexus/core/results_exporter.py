@@ -1,5 +1,5 @@
 from nexus.core.lazy_analysis_result import LazyAnalysisResult
-from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exportation.interfaces import ExportationStrategy
 
 
 class ResultsExporter:

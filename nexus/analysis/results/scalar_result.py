@@ -1,5 +1,5 @@
 from nexus.analysis.interfaces import AnalysisResult
-from nexus.exporting.interfaces import ExportationStrategy
+from nexus.exportation.interfaces import ExportationStrategy
 
 
 class ScalarResult(AnalysisResult):
