@@ -1,11 +1,17 @@
 from nexus.processing.strategies.bandpass_filter_strategy import (
     BandpassFilterStrategy,
 )
+from nexus.processing.strategies.binned_spike_train_strategy import (
+    BinnedSpikeTrainStrategy,
+)
 from nexus.processing.strategies.concatenation_strategy import (
     ConcatenationStrategy,
 )
 from nexus.processing.strategies.repetition_strategy import (
     RepetitionStrategy,
+)
+from nexus.processing.strategies.spike_extraction_strategy import (
+    SpikeExtractionStrategy,
 )
 from nexus.processing.strategies.standardization_strategy import (
     StandardizationStrategy,
@@ -13,7 +19,9 @@ from nexus.processing.strategies.standardization_strategy import (
 
 __all__ = [
     "BandpassFilterStrategy",
+    "BinnedSpikeTrainStrategy",
     "ConcatenationStrategy",
     "RepetitionStrategy",
+    "SpikeExtractionStrategy",
     "StandardizationStrategy",
 ]
