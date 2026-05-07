@@ -11,8 +11,8 @@ class Analyzer:
     def analyze_data(
         self, analysis_strategy: AnalysisStrategy, filter_criteria: FilterCriteria
     ) -> LazyAnalysisResult:
-        input_proxies = self._data.get_proxies_by_criteria_dict(
-            filter_criteria.to_dict()
-        )
-
+        criteria_dict = {
+            k: v for k, v in filter_criteria.to_dict().items() if v is not None
+        }
+        input_proxies = self._data.get_proxies_by_criteria_dict(criteria_dict)
         return LazyAnalysisResult(input_proxies, analysis_strategy)

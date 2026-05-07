@@ -5,6 +5,7 @@ from elephant.conversion import BinnedSpikeTrain
 from neo.core import AnalogSignal, SpikeTrain
 from neo.core.dataobject import DataObject
 
+import numpy as np
 import quantities as pq
 
 from nexus.common.interfaces import FilterCriteria
@@ -38,8 +39,17 @@ class BinnedSpikeTrainStrategy(
 
     supported_data_object_types = [SpikeTrain]
 
-    def __init__(self, bin_size: pq.Quantity = 1 * pq.ms) -> None:
+    def __init__(
+        self,
+        bin_size: pq.Quantity = 1 * pq.ms,
+        t_start: pq.Quantity | None = None,
+        t_stop: pq.Quantity | None = None,
+        tolerance: float = 1e-8,
+    ) -> None:
         self._bin_size = bin_size
+        self._t_start = t_start
+        self._t_stop = t_stop
+        self._tolerance = tolerance
 
     @property
     def filter_criteria_type(self) -> type[BinnedSpikeTrainStrategyFilterCriteria]:
@@ -71,8 +81,17 @@ class BinnedSpikeTrainStrategy(
         return node_definitions
 
     def _bin_spike_train(self, spike_train: SpikeTrain) -> AnalogSignal:
-        bst = BinnedSpikeTrain(spike_train, bin_size=self._bin_size)
-        binary_array = bst.to_array(binary=True)[0].astype(float)
+        bst = BinnedSpikeTrain(
+            spike_train,
+            bin_size=self._bin_size,
+            t_start=self._t_start,
+            t_stop=self._t_stop,
+            tolerance=self._tolerance,
+        )
+        # Cast to int32: AnalogSignal stores float64 by default, and
+        # DiscreteMIEstimator warns when it receives float arrays because it
+        # expects properly symbolized (integer) data.
+        binary_array = bst.to_bool_array()[0].astype(np.int32)
         sampling_rate = (1.0 / self._bin_size).rescale(pq.Hz)
         return AnalogSignal(
             signal=binary_array,

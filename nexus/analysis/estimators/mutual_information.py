@@ -27,6 +27,15 @@ class DiscreteMutualInformationConfig(MutualInformationConfig):
     def get_conditional_estimator_class(self) -> MutualInformationEstimator:
         return DiscreteCMIEstimator
 
+    def get_estimator_kwargs(self) -> dict[str, Any]:
+        kwargs = super().get_estimator_kwargs()
+        # DiscreteMIEstimator hardcodes normalize=False when calling super(),
+        # so passing it again via **kwargs causes a "multiple values" TypeError.
+        # The kernel estimator accepts normalize as a real parameter, so it
+        # must stay in KernelMutualInformationConfig's kwargs.
+        kwargs.pop("normalize", None)
+        return kwargs
+
 
 @dataclass
 class KernelMutualInformationConfig(

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict
 from typing import Any
 
-from elephant.spike_train_generation import spike_extraction
+from elephant.spike_train_generation import threshold_detection
 from neo.core import AnalogSignal, SpikeTrain
 from neo.core.dataobject import DataObject
 
@@ -76,7 +76,15 @@ class SpikeExtractionStrategy(
         return node_definitions
 
     def _extract_spikes(self, signal: AnalogSignal) -> SpikeTrain:
-        return spike_extraction(signal, threshold=self._threshold, sign=self._sign)
+        # threshold_detection is used instead of spike_extraction because
+        # spike_extraction also extracts fixed-length waveform snippets around
+        # each spike. Spikes near the signal boundaries produce truncated
+        # snippets, which cannot be stacked into a uniform array and raise a
+        # ValueError. threshold_detection returns only spike times, which is
+        # all downstream strategies (e.g. BinnedSpikeTrainStrategy) need.
+        spike_train = threshold_detection(signal, threshold=self._threshold, sign=self._sign)
+        spike_train.name = signal.name
+        return spike_train
 
     def apply(self, input_data: SpikeExtractionStrategyDataInput) -> list[DataObject]:
         self.validate_data_objects(input_data.inputs)

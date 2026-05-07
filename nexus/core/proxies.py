@@ -25,6 +25,8 @@ class NeoSignalProxy(SignalProxy):
                 if self._native_proxy is not None
                 else self._data_object
             )
+            if "name" in self._annotations:
+                self._cache.name = self._annotations["name"]
         return self._cache
 
 
