@@ -18,9 +18,17 @@ class MatrixElement:
 
 
 class MatrixResult(AnalysisResult):
-    def __init__(self, algorithm: str, matrix: list[MatrixElement]) -> None:
+    def __init__(
+        self,
+        algorithm: str,
+        matrix: list[MatrixElement],
+        row_label: str = "row",
+        col_label: str = "column",
+    ) -> None:
         super().__init__(algorithm)
         self.matrix = matrix
+        self.row_label = row_label
+        self.col_label = col_label
 
     @cached_property
     def matrix_df(self) -> pd.DataFrame:

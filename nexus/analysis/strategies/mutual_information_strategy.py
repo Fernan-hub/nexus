@@ -68,4 +68,9 @@ class MutualInformationStrategy(EstimatorBasedAnalysisStrategy):
                 matrix.append(
                     MatrixElement(row=row_label, column=col_label, value=mi_result)
                 )
-        return MatrixResult(algorithm=self._ALGORITHM_NAME, matrix=matrix)
+        return MatrixResult(
+            algorithm=self._ALGORITHM_NAME,
+            matrix=matrix,
+            row_label="signal_x",
+            col_label="signal_y",
+        )

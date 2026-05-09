@@ -21,7 +21,12 @@ class CSVExporter(ExportationStrategy):
         super().__init__(config)
 
     def export_matrix_result(self, matrix_result: "MatrixResult") -> None:
-        self._dataframe_to_csv(matrix_result.matrix_df, matrix_result)
+        pivot_df = (
+            matrix_result.matrix_df.pivot(index="row", columns="column", values="value")
+            .rename_axis(f"{matrix_result.row_label}/{matrix_result.col_label}", axis=0)
+            .rename_axis(None, axis=1)
+        )
+        self._dataframe_to_csv(pivot_df, matrix_result, index=True)
 
     def export_vector_result(self, vector_result: "VectorResult") -> None:
         self._dataframe_to_csv(vector_result.vector, vector_result)
@@ -32,7 +37,7 @@ class CSVExporter(ExportationStrategy):
         )
 
     def _dataframe_to_csv(
-        self, df: pd.DataFrame, analysis_result: "AnalysisResult"
+        self, df: pd.DataFrame, analysis_result: "AnalysisResult", index: bool = False
     ) -> None:
         output_file_path = self._get_output_file_path(analysis_result)
-        df.to_csv(output_file_path, index=False, sep=self._config.delimiter)
+        df.to_csv(output_file_path, index=index, sep=self._config.delimiter)

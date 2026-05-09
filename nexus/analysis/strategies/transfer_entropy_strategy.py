@@ -65,4 +65,9 @@ class TransferEntropyStrategy(EstimatorBasedAnalysisStrategy):
                 matrix.append(
                     MatrixElement(row=row_label, column=col_label, value=te_result)
                 )
-        return MatrixResult(algorithm=self._ALGORITHM_NAME, matrix=matrix)
+        return MatrixResult(
+            algorithm=self._ALGORITHM_NAME,
+            matrix=matrix,
+            row_label="source",
+            col_label="destination",
+        )
