@@ -62,7 +62,7 @@ class ConcatenationStrategy(
         return [
             NodeDefinition(
                 input_proxies_dict=asdict(input_proxies),
-                output_annotations=self._infer_annotations(input_proxies.inputs),
+                output_annotations=[self._infer_annotations(input_proxies.inputs)],
             )
         ]
 

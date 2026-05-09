@@ -16,8 +16,8 @@ from nexus.analysis.interfaces import EstimatorConfigBase
 @dataclass
 class TransferEntropyConfig(EstimatorConfigBase, ABC):
     step_size: int = 1
-    src_hist_length: int = 1
-    dest_hist_length: int = 1
+    src_hist_len: int = 1
+    dest_hist_len: int = 1
     prop_time: int = 0
     offset: int = 0
 
