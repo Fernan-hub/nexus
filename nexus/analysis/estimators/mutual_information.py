@@ -21,6 +21,9 @@ class MutualInformationConfig(EstimatorConfigBase, ABC):
 
 @dataclass
 class DiscreteMutualInformationConfig(MutualInformationConfig):
+    def get_approach_name(self) -> str:
+        return "discrete"
+
     def get_estimator_class(self) -> MutualInformationEstimator:
         return DiscreteMIEstimator
 
@@ -41,6 +44,9 @@ class DiscreteMutualInformationConfig(MutualInformationConfig):
 class KernelMutualInformationConfig(
     MutualInformationConfig, KernelEstimatorConfigMixin
 ):
+    def get_approach_name(self) -> str:
+        return "kernel"
+
     def get_estimator_class(self) -> MutualInformationEstimator:
         return KernelMIEstimator
 

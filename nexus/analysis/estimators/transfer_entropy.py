@@ -24,6 +24,9 @@ class TransferEntropyConfig(EstimatorConfigBase, ABC):
 
 @dataclass
 class DiscreteTransferEntropyConfig(TransferEntropyConfig):
+    def get_approach_name(self) -> str:
+        return "discrete"
+
     def get_estimator_class(self) -> TransferEntropyEstimator:
         return DiscreteTEEstimator
 
@@ -33,6 +36,9 @@ class DiscreteTransferEntropyConfig(TransferEntropyConfig):
 
 @dataclass
 class KernelTransferEntropyConfig(TransferEntropyConfig, KernelEstimatorConfigMixin):
+    def get_approach_name(self) -> str:
+        return "kernel"
+
     def get_estimator_class(self) -> TransferEntropyEstimator:
         return KernelTEEstimator
 

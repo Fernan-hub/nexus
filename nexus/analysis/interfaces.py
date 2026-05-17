@@ -40,6 +40,10 @@ class EstimatorConfigBase(ABC):
     base: LogBaseType = 2
 
     @abstractmethod
+    def get_approach_name(self) -> str:
+        pass
+
+    @abstractmethod
     def get_estimator_class(self) -> EstimatorType:
         pass
 

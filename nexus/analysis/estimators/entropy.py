@@ -18,12 +18,18 @@ class EntropyConfig(EstimatorConfigBase, ABC):
 
 @dataclass
 class DiscreteEntropyConfig(EntropyConfig):
+    def get_approach_name(self) -> str:
+        return "discrete"
+
     def get_estimator_class(self) -> EntropyEstimator:
         return DiscreteEntropyEstimator
 
 
 @dataclass
 class KernelEntropyConfig(EntropyConfig, KernelEstimatorConfigMixin):
+    def get_approach_name(self) -> str:
+        return "kernel"
+
     def get_estimator_class(self) -> EntropyEstimator:
         return KernelEntropyEstimator
 
