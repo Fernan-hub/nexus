@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+import numpy as np
 from neo.core.dataobject import DataObject
 
 from nexus.analysis.estimators.mutual_information import MutualInformationConfig
@@ -40,14 +41,17 @@ class MutualInformationStrategy(EstimatorBasedAnalysisStrategy):
     def _get_estimator_result(
         self, signal_x: DataObject, signal_y: DataObject, cond: list[DataObject] | None
     ) -> float:
+        x = np.squeeze(np.asarray(signal_x))
+        y = np.squeeze(np.asarray(signal_y))
         if cond is None or len(cond) == 0:
             estimator = self._estimator_class(
-                signal_x, signal_y, **self._estimator_kwargs
+                x, y, **self._estimator_kwargs
             )
         else:
             estimator_class = self._config.get_conditional_estimator_class()
+            cond_squeezed = np.squeeze(np.asarray(cond[0]))
             estimator = estimator_class(
-                signal_x, signal_y, cond=cond[0], **self._estimator_kwargs
+                x, y, cond=cond_squeezed, **self._estimator_kwargs
             )
         return estimator.result()
 
