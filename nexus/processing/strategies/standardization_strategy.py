@@ -52,11 +52,11 @@ class StandardizationStrategy(
         return {**proxy.annotations, "standardized": True}
 
     def infer_execution_plan(
-        self, input_proxies: StandardizationStrategyDataInput
+        self, input_proxies: StandardizationStrategyProxyInput
     ) -> list[NodeDefinition]:
         node_definitions = []
         for proxy in input_proxies.inputs:
-            node_input_proxies = StandardizationStrategyDataInput(inputs=[proxy])
+            node_input_proxies = StandardizationStrategyProxyInput([proxy])
             node_definitions.append(
                 NodeDefinition(
                     input_proxies_dict=asdict(node_input_proxies),
