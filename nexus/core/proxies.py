@@ -5,16 +5,21 @@ from neo.io.proxyobjects import BaseProxy
 
 from nexus.core.interfaces import SignalProxy
 from nexus.core.operation_node import OperationNode
+from nexus.protocols import AnnotatedItem
 
 
 class NeoSignalProxy(SignalProxy):
     def __init__(
         self, neo_proxy: BaseProxy | None = None, data_object: DataObject | None = None
     ) -> None:
-        super().__init__()
         if neo_proxy is None and data_object is None:
             # TODO: Raise a more specific exception here
             raise ValueError("Either neo_proxy or data_object must be provided.")
+
+        annotated_item: AnnotatedItem = (
+            neo_proxy if neo_proxy is not None else data_object
+        )
+        super().__init__(annotated_item.annotations)
         self._native_proxy: BaseProxy | None = neo_proxy
         self._data_object: DataObject | None = data_object
 
