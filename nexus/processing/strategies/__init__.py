@@ -10,6 +10,9 @@ from nexus.processing.strategies.binned_spike_train_strategy import (
 from nexus.processing.strategies.concatenation_strategy import (
     ConcatenationStrategy,
 )
+from nexus.processing.strategies.normalization_strategy import (
+    NormalizationStrategy,
+)
 from nexus.processing.strategies.repetition_strategy import (
     RepetitionStrategy,
 )
@@ -25,6 +28,7 @@ __all__ = [
     "BinarizationStrategy",
     "BinnedSpikeTrainStrategy",
     "ConcatenationStrategy",
+    "NormalizationStrategy",
     "RepetitionStrategy",
     "SpikeExtractionStrategy",
     "StandardizationStrategy",
