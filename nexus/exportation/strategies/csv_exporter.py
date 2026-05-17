@@ -33,7 +33,8 @@ class CSVExporter(ExportationStrategy):
 
     def export_scalar_result(self, scalar_result: "ScalarResult") -> None:
         self._dataframe_to_csv(
-            pd.DataFrame([scalar_result.value], columns=["value"]), scalar_result
+            pd.DataFrame([scalar_result.value], columns=[scalar_result.label]),
+            scalar_result,
         )
 
     def _dataframe_to_csv(
