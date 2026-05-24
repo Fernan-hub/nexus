@@ -14,6 +14,8 @@ from nexus.exportation.strategies import (
     HeatMapExporterConfig,
     CSVExporter,
     CSVExporterConfig,
+    ConnGraphExporter,
+    ConnGraphExporterConfig,
 )
 from nexus.loading.strategies import CSVLoader, CSVLoaderConfig
 from nexus.processing.strategies import (
@@ -180,6 +182,18 @@ csv_exporter_config = CSVExporterConfig(
 csv_exporter = CSVExporter(csv_exporter_config)
 mi_exporter.export_result(csv_exporter)
 
+conn_graph_exporter_config = ConnGraphExporterConfig(
+    output_file_path=str(
+        OUTPUT_PLOT_DIR_PATH.joinpath("mutual_information_conn_graph.png")
+    ),
+    fig_title="Mutual Information Connectivity Graph",
+    tight_layout=True,
+    threshold=1e-3,
+    width_multiplier=5.0,
+)
+conn_graph_exporter = ConnGraphExporter(conn_graph_exporter_config)
+mi_exporter.export_result(conn_graph_exporter)
+
 te_exporter = ResultsExporter(transfer_entropy_result)
 
 heat_map_exporter_config = HeatMapExporterConfig(
@@ -195,3 +209,15 @@ csv_exporter_config = CSVExporterConfig(
 )
 csv_exporter = CSVExporter(csv_exporter_config)
 te_exporter.export_result(csv_exporter)
+
+conn_graph_exporter_config = ConnGraphExporterConfig(
+    output_file_path=str(
+        OUTPUT_PLOT_DIR_PATH.joinpath("transfer_entropy_conn_graph.png")
+    ),
+    fig_title="Transfer Entropy Connectivity Graph (prop_time=1ms)",
+    tight_layout=True,
+    threshold=1e-3,
+    width_multiplier=5.0,
+)
+conn_graph_exporter = ConnGraphExporter(conn_graph_exporter_config)
+te_exporter.export_result(conn_graph_exporter)

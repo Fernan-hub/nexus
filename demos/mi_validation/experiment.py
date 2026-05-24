@@ -11,6 +11,8 @@ from nexus.exportation.strategies import (
     CSVExporterConfig,
     HeatMapExporter,
     HeatMapExporterConfig,
+    ConnGraphExporter,
+    ConnGraphExporterConfig,
 )
 from nexus.loading.strategies import CSVLoader, CSVLoaderConfig
 from nexus.processing.strategies import StandardizationStrategy
@@ -72,6 +74,19 @@ mi_exporter.export_result(
             ),
             fig_title="Mutual Information Heatmap (discrete, nats)",
             tight_layout=True,
+        )
+    )
+)
+mi_exporter.export_result(
+    ConnGraphExporter(
+        ConnGraphExporterConfig(
+            output_file_path=str(
+                OUTPUT_PLOT_DIR_PATH / "mutual_information_conn_graph.png"
+            ),
+            fig_title="Mutual Information Connectivity Graph (discrete, nats)",
+            tight_layout=True,
+            threshold=0.1,
+            width_multiplier=5.0,
         )
     )
 )
