@@ -1,7 +1,6 @@
 from typing import Any, TypeGuard
 from neo.core.filters import FilterCondition
 
-
 Annotation = dict[str, Any]
 
 SingleCriteria = dict[str, FilterCondition]

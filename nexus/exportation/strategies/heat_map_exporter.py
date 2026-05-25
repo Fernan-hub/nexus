@@ -38,8 +38,16 @@ class HeatMapExporter(ExportationStrategy):
         if self._config.fig_title is not None:
             plt.title(self._config.fig_title)
 
-        plt.xlabel(self._config.x_label if self._config.x_label is not None else matrix_result.col_label)
-        plt.ylabel(self._config.y_label if self._config.y_label is not None else matrix_result.row_label)
+        plt.xlabel(
+            self._config.x_label
+            if self._config.x_label is not None
+            else matrix_result.col_label
+        )
+        plt.ylabel(
+            self._config.y_label
+            if self._config.y_label is not None
+            else matrix_result.row_label
+        )
 
         if self._config.tight_layout:
             plt.tight_layout()

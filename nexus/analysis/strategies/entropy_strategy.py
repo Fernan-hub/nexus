@@ -39,7 +39,7 @@ class EntropyStrategy(EstimatorBasedAnalysisStrategy):
     def _compute_joint_entropy(
         self, signal: DataObject, cond: list[DataObject]
     ) -> float:
-        joint_data = tuple(signal, cond[0])
+        joint_data = (signal, cond[0])
         estimator = self._estimator_class(joint_data, **self._estimator_kwargs)
         return estimator.result()
 

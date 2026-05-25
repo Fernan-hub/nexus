@@ -44,9 +44,7 @@ class MutualInformationStrategy(EstimatorBasedAnalysisStrategy):
         x = np.squeeze(np.asarray(signal_x))
         y = np.squeeze(np.asarray(signal_y))
         if cond is None or len(cond) == 0:
-            estimator = self._estimator_class(
-                x, y, **self._estimator_kwargs
-            )
+            estimator = self._estimator_class(x, y, **self._estimator_kwargs)
         else:
             estimator_class = self._config.get_conditional_estimator_class()
             cond_squeezed = np.squeeze(np.asarray(cond[0]))

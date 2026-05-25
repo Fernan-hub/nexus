@@ -82,7 +82,9 @@ class SpikeExtractionStrategy(
         # snippets, which cannot be stacked into a uniform array and raise a
         # ValueError. threshold_detection returns only spike times, which is
         # all downstream strategies (e.g. BinnedSpikeTrainStrategy) need.
-        spike_train = threshold_detection(signal, threshold=self._threshold, sign=self._sign)
+        spike_train = threshold_detection(
+            signal, threshold=self._threshold, sign=self._sign
+        )
         spike_train.name = signal.name
         return spike_train
 
