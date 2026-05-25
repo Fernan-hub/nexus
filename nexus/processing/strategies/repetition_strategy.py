@@ -58,11 +58,11 @@ class RepetitionStrategy(
         return {**proxy.annotations, "repeated": True}
 
     def infer_execution_plan(
-        self, input_proxies: RepetitionStrategyDataInput
+        self, input_proxies: RepetitionStrategyProxyInput
     ) -> list[NodeDefinition]:
         node_definitions = []
         for proxy in input_proxies.inputs:
-            node_input_proxies = RepetitionStrategyDataInput(inputs=[proxy])
+            node_input_proxies = RepetitionStrategyProxyInput(inputs=[proxy])
             node_definitions.append(
                 NodeDefinition(
                     input_proxies_dict=asdict(node_input_proxies),

@@ -65,7 +65,7 @@ class NormalizationStrategy(
     ) -> list[NodeDefinition]:
         node_definitions = []
         for proxy in input_proxies.inputs:
-            node_input_proxies = NormalizationStrategyDataInput(inputs=[proxy])
+            node_input_proxies = NormalizationStrategyProxyInput(inputs=[proxy])
             node_definitions.append(
                 NodeDefinition(
                     input_proxies_dict=asdict(node_input_proxies),
