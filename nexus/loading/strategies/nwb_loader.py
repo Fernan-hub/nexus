@@ -20,4 +20,7 @@ class NWBLoader(DataLoader):
 
     def load_data(self) -> list[BaseProxy] | list[DataObject]:
         reader = NWBIO(filename=self._config.file_path)
-        return get_all_data_from_blocks(reader.read_all_blocks(lazy=True))
+        # lazy=True is broken in neo <=0.14.4: NWBIO.AnalogSignalProxy does not set the
+        # .segment attribute that neo.core.objectlist requires when appending to a segment.
+        # Switch back to lazy=True once fixed upstream.
+        return get_all_data_from_blocks(reader.read_all_blocks(lazy=False))
