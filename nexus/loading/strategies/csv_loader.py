@@ -1,5 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+
+import quantities as pq
+from quantities.unitquantity import UnitQuantity, UnitTime
 from neo.core.dataobject import DataObject
 from neo.io.proxyobjects import BaseProxy
 from neo.io import AsciiSignalIO
@@ -10,6 +13,10 @@ from nexus.loading.models import DataLoaderConfig
 
 @dataclass
 class CSVLoaderConfig(DataLoaderConfig):
+    sampling_rate: UnitQuantity
+    units: UnitQuantity
+    t_start: UnitTime = field(default_factory=lambda: 0.0 * pq.s)
+    time_units: UnitTime = field(default_factory=lambda: pq.s)
     delimiter: str = ","
     use_cols: list[int] | None = None
     skip_rows: int = 0
