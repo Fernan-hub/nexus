@@ -1,7 +1,8 @@
 """Shared test utilities for scenario-based testing."""
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Type
+from unittest.mock import call
 
 
 @dataclass
@@ -18,8 +19,8 @@ class Expected:
     """Configuration for the Assert phase of a test scenario."""
 
     data: dict[str, Any] = field(default_factory=dict)
-    exceptions: dict[str, Any] = field(default_factory=dict)
-    calls: dict[str, Any] = field(default_factory=dict)
+    exceptions: dict[str, Type[Exception]] = field(default_factory=dict)
+    calls: dict[str, call] = field(default_factory=dict)
 
 
 @dataclass
