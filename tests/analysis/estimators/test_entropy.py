@@ -23,6 +23,10 @@ class TestDiscreteEntropyConfig(unittest.TestCase):
         )
 
     @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(DiscreteEntropyConfig().get_approach_name(), "discrete")
+
+    @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
         self.assertEqual(DiscreteEntropyConfig().get_estimator_kwargs(), {})
 
@@ -40,6 +44,10 @@ class TestKernelEntropyConfig(unittest.TestCase):
         self.assertIs(
             KernelEntropyConfig().get_estimator_class(), KernelEntropyEstimator
         )
+
+    @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(KernelEntropyConfig().get_approach_name(), "kernel")
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:

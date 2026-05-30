@@ -28,6 +28,10 @@ class TestDiscreteTransferEntropyConfig(unittest.TestCase):
         )
 
     @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(DiscreteTransferEntropyConfig().get_approach_name(), "discrete")
+
+    @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
         self.assertIs(
             DiscreteTransferEntropyConfig().get_conditional_estimator_class(),
@@ -95,6 +99,10 @@ class TestKernelTransferEntropyConfig(unittest.TestCase):
         self.assertIs(
             KernelTransferEntropyConfig().get_estimator_class(), KernelTEEstimator
         )
+
+    @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(KernelTransferEntropyConfig().get_approach_name(), "kernel")
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:

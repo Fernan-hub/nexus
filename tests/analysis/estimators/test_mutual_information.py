@@ -28,6 +28,10 @@ class TestDiscreteMutualInformationConfig(unittest.TestCase):
         )
 
     @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(DiscreteMutualInformationConfig().get_approach_name(), "discrete")
+
+    @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
         self.assertIs(
             DiscreteMutualInformationConfig().get_conditional_estimator_class(),
@@ -71,6 +75,10 @@ class TestKernelMutualInformationConfig(unittest.TestCase):
         self.assertIs(
             KernelMutualInformationConfig().get_estimator_class(), KernelMIEstimator
         )
+
+    @pytest.mark.unit
+    def test_get_approach_name(self) -> None:
+        self.assertEqual(KernelMutualInformationConfig().get_approach_name(), "kernel")
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
