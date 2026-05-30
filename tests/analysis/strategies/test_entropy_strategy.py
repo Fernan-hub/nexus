@@ -1,5 +1,6 @@
 """Tests for EntropyStrategy."""
 
+import math
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +9,7 @@ import pytest
 import quantities as pq
 from neo.core import AnalogSignal
 
-from nexus.analysis.estimators.entropy import DiscreteEntropyConfig
+from nexus.analysis.estimators.entropy import DiscreteEntropyConfig, KernelEntropyConfig
 from nexus.analysis.results.vector_result import VectorResult
 from nexus.analysis.strategies.entropy_strategy import (
     EntropyStrategy,
@@ -162,3 +163,34 @@ class TestIntegrationEntropyStrategy(unittest.TestCase):
         )
 
         self.assertAlmostEqual(result.vector["cond_entropy"][0], 0.0, places=10)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_entropy_produces_finite_result(self) -> None:
+        """KernelEntropyConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        rng = np.random.default_rng(0)
+        sig = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = EntropyStrategy(KernelEntropyConfig()).run_analysis(
+            EntropyStrategyDataInput(data=[sig])
+        )
+
+        self.assertIsInstance(result, VectorResult)
+        self.assertTrue(math.isfinite(result.vector["entropy"][0]))
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_conditional_entropy_produces_finite_result(self) -> None:
+        """KernelEntropyConfig conditional path wires up correctly and returns a finite value."""
+        rng = np.random.default_rng(1)
+        sig = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = EntropyStrategy(KernelEntropyConfig()).run_analysis(
+            EntropyStrategyDataInput(data=[sig], cond=[cond])
+        )
+
+        self.assertIsInstance(result, VectorResult)
+        self.assertTrue(math.isfinite(result.vector["cond_entropy"][0]))

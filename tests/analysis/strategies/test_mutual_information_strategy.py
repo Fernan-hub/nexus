@@ -1,5 +1,6 @@
 """Tests for MutualInformationStrategy."""
 
+import math
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +9,10 @@ import pytest
 import quantities as pq
 from neo.core import AnalogSignal
 
-from nexus.analysis.estimators.mutual_information import DiscreteMutualInformationConfig
+from nexus.analysis.estimators.mutual_information import (
+    DiscreteMutualInformationConfig,
+    KernelMutualInformationConfig,
+)
 from nexus.analysis.results.matrix_result import MatrixResult
 from nexus.analysis.strategies.mutual_information_strategy import (
     MutualInformationStrategy,
@@ -156,7 +160,7 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_mi_of_independent_signals_is_negligible(self) -> None:
-        """MI(X, Y) ≈ 0 when X and Y are drawn independently."""
+        """MI(X, Y) ~= 0 when X and Y are drawn independently."""
         rng = np.random.default_rng(42)
         sig_x = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
@@ -166,3 +170,49 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
         )
 
         self.assertLess(abs(result.matrix[0].value), 0.01)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    def test_conditional_mi_of_signal_with_itself_given_itself_is_zero(self) -> None:
+        """CMI(X; X | X) = 0: knowing X makes Y=X and X itself fully redundant."""
+        data = np.tile([0.0, 1.0], 50)
+        sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
+            MutualInformationStrategyDataInput(data_x=[sig], data_y=[sig], cond=[sig])
+        )
+
+        self.assertAlmostEqual(result.matrix[0].value, 0.0, places=10)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_mi_produces_finite_result(self) -> None:
+        """KernelMutualInformationConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        rng = np.random.default_rng(1)
+        sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = MutualInformationStrategy(KernelMutualInformationConfig()).run_analysis(
+            MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y])
+        )
+
+        self.assertIsInstance(result, MatrixResult)
+        self.assertTrue(math.isfinite(result.matrix[0].value))
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_conditional_mi_produces_finite_result(self) -> None:
+        """KernelMutualInformationConfig conditional path wires up correctly and returns a finite value."""
+        rng = np.random.default_rng(2)
+        sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = MutualInformationStrategy(KernelMutualInformationConfig()).run_analysis(
+            MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y], cond=[cond])
+        )
+
+        self.assertIsInstance(result, MatrixResult)
+        self.assertTrue(math.isfinite(result.matrix[0].value))

@@ -1,5 +1,6 @@
 """Tests for TransferEntropyStrategy."""
 
+import math
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -8,7 +9,10 @@ import pytest
 import quantities as pq
 from neo.core import AnalogSignal
 
-from nexus.analysis.estimators.transfer_entropy import DiscreteTransferEntropyConfig
+from nexus.analysis.estimators.transfer_entropy import (
+    DiscreteTransferEntropyConfig,
+    KernelTransferEntropyConfig,
+)
 from nexus.analysis.results.matrix_result import MatrixResult
 from nexus.analysis.strategies.transfer_entropy_strategy import (
     TransferEntropyStrategy,
@@ -157,7 +161,7 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_te_of_independent_signals_is_negligible(self) -> None:
-        """TE(X -> Y) ≈ 0 when X and Y are drawn independently."""
+        """TE(X -> Y) ~= 0 when X and Y are drawn independently."""
         rng = np.random.default_rng(0)
         sig_x = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
@@ -167,3 +171,53 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
         )
 
         self.assertLess(abs(result.matrix[0].value), 0.01)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    def test_conditional_te_detects_causal_dependency_given_independent_signal(self) -> None:
+        """CTE(X->Y | Z) ~= ln(2) nats when Y[t] = X[t-1] and Z is independent: conditioning on an irrelevant signal does not suppress the detected transfer."""
+        rng = np.random.default_rng(42)
+        x = rng.integers(0, 2, 500).astype(float)
+        y = np.roll(x, 1)
+        sig_x = AnalogSignal(x * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(y * pq.mV, sampling_rate=1.0 * pq.kHz)
+        cond = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = TransferEntropyStrategy(DiscreteTransferEntropyConfig()).run_analysis(
+            TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y], cond=[cond])
+        )
+
+        self.assertAlmostEqual(result.matrix[0].value, np.log(2), delta=0.05)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_te_produces_finite_result(self) -> None:
+        """KernelTransferEntropyConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        rng = np.random.default_rng(1)
+        sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = TransferEntropyStrategy(KernelTransferEntropyConfig()).run_analysis(
+            TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y])
+        )
+
+        self.assertIsInstance(result, MatrixResult)
+        self.assertTrue(math.isfinite(result.matrix[0].value))
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    @pytest.mark.slow
+    def test_kernel_conditional_te_produces_finite_result(self) -> None:
+        """KernelTransferEntropyConfig conditional path wires up correctly and returns a finite value."""
+        rng = np.random.default_rng(2)
+        sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = TransferEntropyStrategy(KernelTransferEntropyConfig()).run_analysis(
+            TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y], cond=[cond])
+        )
+
+        self.assertIsInstance(result, MatrixResult)
+        self.assertTrue(math.isfinite(result.matrix[0].value))
