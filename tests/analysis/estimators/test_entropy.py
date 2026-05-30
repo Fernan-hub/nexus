@@ -3,7 +3,10 @@
 import unittest
 
 import pytest
-from infomeasure.estimators.entropy import DiscreteEntropyEstimator, KernelEntropyEstimator
+from infomeasure.estimators.entropy import (
+    DiscreteEntropyEstimator,
+    KernelEntropyEstimator,
+)
 
 from nexus.analysis.constants import KernelType
 from nexus.analysis.estimators.entropy import DiscreteEntropyConfig, KernelEntropyConfig
@@ -15,7 +18,9 @@ class TestDiscreteEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(DiscreteEntropyConfig().get_estimator_class(), DiscreteEntropyEstimator)
+        self.assertIs(
+            DiscreteEntropyConfig().get_estimator_class(), DiscreteEntropyEstimator
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
@@ -32,7 +37,9 @@ class TestKernelEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(KernelEntropyConfig().get_estimator_class(), KernelEntropyEstimator)
+        self.assertIs(
+            KernelEntropyConfig().get_estimator_class(), KernelEntropyEstimator
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
@@ -40,12 +47,24 @@ class TestKernelEntropyConfig(unittest.TestCase):
             Scenario(
                 name="default",
                 given=Given(data={"config": KernelEntropyConfig()}),
-                expected=Expected(data={"kwargs": {"bandwidth": 1.0, "kernel": "gaussian", "workers": 1}}),
+                expected=Expected(
+                    data={
+                        "kwargs": {"bandwidth": 1.0, "kernel": "gaussian", "workers": 1}
+                    }
+                ),
             ),
             Scenario(
                 name="custom",
-                given=Given(data={"config": KernelEntropyConfig(bandwidth=2.0, kernel=KernelType.BOX, workers=4)}),
-                expected=Expected(data={"kwargs": {"bandwidth": 2.0, "kernel": "box", "workers": 4}}),
+                given=Given(
+                    data={
+                        "config": KernelEntropyConfig(
+                            bandwidth=2.0, kernel=KernelType.BOX, workers=4
+                        )
+                    }
+                ),
+                expected=Expected(
+                    data={"kwargs": {"bandwidth": 2.0, "kernel": "box", "workers": 4}}
+                ),
             ),
         ]
 

@@ -23,11 +23,16 @@ class TestDiscreteMutualInformationConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(DiscreteMutualInformationConfig().get_estimator_class(), DiscreteMIEstimator)
+        self.assertIs(
+            DiscreteMutualInformationConfig().get_estimator_class(), DiscreteMIEstimator
+        )
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
-        self.assertIs(DiscreteMutualInformationConfig().get_conditional_estimator_class(), DiscreteCMIEstimator)
+        self.assertIs(
+            DiscreteMutualInformationConfig().get_conditional_estimator_class(),
+            DiscreteCMIEstimator,
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs_excludes_normalize(self) -> None:
@@ -63,11 +68,16 @@ class TestKernelMutualInformationConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(KernelMutualInformationConfig().get_estimator_class(), KernelMIEstimator)
+        self.assertIs(
+            KernelMutualInformationConfig().get_estimator_class(), KernelMIEstimator
+        )
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
-        self.assertIs(KernelMutualInformationConfig().get_conditional_estimator_class(), KernelCMIEstimator)
+        self.assertIs(
+            KernelMutualInformationConfig().get_conditional_estimator_class(),
+            KernelCMIEstimator,
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
@@ -75,12 +85,42 @@ class TestKernelMutualInformationConfig(unittest.TestCase):
             Scenario(
                 name="default",
                 given=Given(data={"config": KernelMutualInformationConfig()}),
-                expected=Expected(data={"kwargs": {"offset": 0, "normalize": False, "bandwidth": 1.0, "kernel": "gaussian", "workers": 1}}),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "offset": 0,
+                            "normalize": False,
+                            "bandwidth": 1.0,
+                            "kernel": "gaussian",
+                            "workers": 1,
+                        }
+                    }
+                ),
             ),
             Scenario(
                 name="custom",
-                given=Given(data={"config": KernelMutualInformationConfig(offset=2, normalize=True, bandwidth=0.5, kernel=KernelType.BOX, workers=2)}),
-                expected=Expected(data={"kwargs": {"offset": 2, "normalize": True, "bandwidth": 0.5, "kernel": "box", "workers": 2}}),
+                given=Given(
+                    data={
+                        "config": KernelMutualInformationConfig(
+                            offset=2,
+                            normalize=True,
+                            bandwidth=0.5,
+                            kernel=KernelType.BOX,
+                            workers=2,
+                        )
+                    }
+                ),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "offset": 2,
+                            "normalize": True,
+                            "bandwidth": 0.5,
+                            "kernel": "box",
+                            "workers": 2,
+                        }
+                    }
+                ),
             ),
         ]
 

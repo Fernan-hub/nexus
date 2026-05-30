@@ -87,18 +87,22 @@ class TestCrossEntropyStrategy(unittest.TestCase):
         scenarios = [
             Scenario(
                 name="named signals",
-                given=Given(data={
-                    "data_p": [_make_signal(name="dist_p")],
-                    "data_q": [_make_signal(name="dist_q")],
-                }),
+                given=Given(
+                    data={
+                        "data_p": [_make_signal(name="dist_p")],
+                        "data_q": [_make_signal(name="dist_q")],
+                    }
+                ),
                 expected=Expected(data={"row": "dist_p", "column": "dist_q"}),
             ),
             Scenario(
                 name="unnamed signals",
-                given=Given(data={
-                    "data_p": [_make_signal(name=None)],
-                    "data_q": [_make_signal(name=None)],
-                }),
+                given=Given(
+                    data={
+                        "data_p": [_make_signal(name=None)],
+                        "data_q": [_make_signal(name=None)],
+                    }
+                ),
                 expected=Expected(data={"row": "data_p_0", "column": "data_q_0"}),
             ),
         ]
@@ -117,7 +121,9 @@ class TestCrossEntropyStrategy(unittest.TestCase):
                 result = strategy.run_analysis(data_input)
 
                 self.assertEqual(result.matrix[0].row, scenario.expected.data["row"])
-                self.assertEqual(result.matrix[0].column, scenario.expected.data["column"])
+                self.assertEqual(
+                    result.matrix[0].column, scenario.expected.data["column"]
+                )
 
 
 class TestIntegrationCrossEntropyStrategy(unittest.TestCase):
@@ -152,4 +158,6 @@ class TestIntegrationCrossEntropyStrategy(unittest.TestCase):
             CrossEntropyStrategyDataInput(data_p=[sig_p], data_q=[sig_p])
         )
 
-        self.assertGreaterEqual(cross_result.matrix[0].value, entropy_result.matrix[0].value)
+        self.assertGreaterEqual(
+            cross_result.matrix[0].value, entropy_result.matrix[0].value
+        )

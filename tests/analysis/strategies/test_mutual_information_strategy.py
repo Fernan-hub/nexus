@@ -91,12 +91,22 @@ class TestMutualInformationStrategy(unittest.TestCase):
         scenarios = [
             Scenario(
                 name="named signals",
-                given=Given(data={"data_x": _make_signal(name="signal_a"), "data_y": _make_signal(name="signal_b")}),
+                given=Given(
+                    data={
+                        "data_x": _make_signal(name="signal_a"),
+                        "data_y": _make_signal(name="signal_b"),
+                    }
+                ),
                 expected=Expected(data={"row": "signal_a", "column": "signal_b"}),
             ),
             Scenario(
                 name="unnamed signals",
-                given=Given(data={"data_x": _make_signal(name=None), "data_y": _make_signal(name=None)}),
+                given=Given(
+                    data={
+                        "data_x": _make_signal(name=None),
+                        "data_y": _make_signal(name=None),
+                    }
+                ),
                 expected=Expected(data={"row": "data_x_0", "column": "data_y_0"}),
             ),
         ]
@@ -115,7 +125,9 @@ class TestMutualInformationStrategy(unittest.TestCase):
                 result = strategy.run_analysis(data_input)
 
                 self.assertEqual(result.matrix[0].row, scenario.expected.data["row"])
-                self.assertEqual(result.matrix[0].column, scenario.expected.data["column"])
+                self.assertEqual(
+                    result.matrix[0].column, scenario.expected.data["column"]
+                )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -151,9 +163,9 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 
-        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
-            MutualInformationStrategyDataInput(data_x=[sig], data_y=[sig])
-        )
+        result = MutualInformationStrategy(
+            DiscreteMutualInformationConfig()
+        ).run_analysis(MutualInformationStrategyDataInput(data_x=[sig], data_y=[sig]))
 
         self.assertAlmostEqual(result.matrix[0].value, np.log(2), places=10)
 
@@ -162,10 +174,16 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
     def test_mi_of_independent_signals_is_negligible(self) -> None:
         """MI(X, Y) ~= 0 when X and Y are drawn independently."""
         rng = np.random.default_rng(42)
-        sig_x = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
-        sig_y = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_x = AnalogSignal(
+            rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz
+        )
+        sig_y = AnalogSignal(
+            rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz
+        )
 
-        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
+        result = MutualInformationStrategy(
+            DiscreteMutualInformationConfig()
+        ).run_analysis(
             MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y])
         )
 
@@ -178,7 +196,9 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 
-        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
+        result = MutualInformationStrategy(
+            DiscreteMutualInformationConfig()
+        ).run_analysis(
             MutualInformationStrategyDataInput(data_x=[sig], data_y=[sig], cond=[sig])
         )
 
@@ -193,7 +213,9 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
         sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
 
-        result = MutualInformationStrategy(KernelMutualInformationConfig()).run_analysis(
+        result = MutualInformationStrategy(
+            KernelMutualInformationConfig()
+        ).run_analysis(
             MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y])
         )
 
@@ -210,8 +232,12 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
 
-        result = MutualInformationStrategy(KernelMutualInformationConfig()).run_analysis(
-            MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y], cond=[cond])
+        result = MutualInformationStrategy(
+            KernelMutualInformationConfig()
+        ).run_analysis(
+            MutualInformationStrategyDataInput(
+                data_x=[sig_x], data_y=[sig_y], cond=[cond]
+            )
         )
 
         self.assertIsInstance(result, MatrixResult)

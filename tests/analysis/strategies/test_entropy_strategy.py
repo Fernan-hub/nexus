@@ -92,7 +92,9 @@ class TestEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.entropy.DiscreteEntropyEstimator")
-    def test_run_analysis_cond_column_name(self, mock_estimator_class: MagicMock) -> None:
+    def test_run_analysis_cond_column_name(
+        self, mock_estimator_class: MagicMock
+    ) -> None:
         """Test that the cond column is named after the cond signal, falling back to a default."""
         scenarios = [
             Scenario(
@@ -120,7 +122,9 @@ class TestEntropyStrategy(unittest.TestCase):
 
                 result = strategy.run_analysis(data_input)
 
-                self.assertEqual(list(result.vector.columns), [scenario.expected.data["column"]])
+                self.assertEqual(
+                    list(result.vector.columns), [scenario.expected.data["column"]]
+                )
 
 
 class TestIntegrationEntropyStrategy(unittest.TestCase):

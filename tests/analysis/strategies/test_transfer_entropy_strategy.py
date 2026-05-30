@@ -91,12 +91,22 @@ class TestTransferEntropyStrategy(unittest.TestCase):
         scenarios = [
             Scenario(
                 name="named signals",
-                given=Given(data={"source": _make_signal(name="neuron_a"), "dest": _make_signal(name="neuron_b")}),
+                given=Given(
+                    data={
+                        "source": _make_signal(name="neuron_a"),
+                        "dest": _make_signal(name="neuron_b"),
+                    }
+                ),
                 expected=Expected(data={"row": "neuron_a", "column": "neuron_b"}),
             ),
             Scenario(
                 name="unnamed signals",
-                given=Given(data={"source": _make_signal(name=None), "dest": _make_signal(name=None)}),
+                given=Given(
+                    data={
+                        "source": _make_signal(name=None),
+                        "dest": _make_signal(name=None),
+                    }
+                ),
                 expected=Expected(data={"row": "source_0", "column": "dest_0"}),
             ),
         ]
@@ -115,7 +125,9 @@ class TestTransferEntropyStrategy(unittest.TestCase):
                 result = strategy.run_analysis(data_input)
 
                 self.assertEqual(result.matrix[0].row, scenario.expected.data["row"])
-                self.assertEqual(result.matrix[0].column, scenario.expected.data["column"])
+                self.assertEqual(
+                    result.matrix[0].column, scenario.expected.data["column"]
+                )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -163,8 +175,12 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
     def test_te_of_independent_signals_is_negligible(self) -> None:
         """TE(X -> Y) ~= 0 when X and Y are drawn independently."""
         rng = np.random.default_rng(0)
-        sig_x = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
-        sig_y = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_x = AnalogSignal(
+            rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz
+        )
+        sig_y = AnalogSignal(
+            rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz
+        )
 
         result = TransferEntropyStrategy(DiscreteTransferEntropyConfig()).run_analysis(
             TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y])
@@ -174,17 +190,23 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
 
     @pytest.mark.integration
     @pytest.mark.strategy
-    def test_conditional_te_detects_causal_dependency_given_independent_signal(self) -> None:
+    def test_conditional_te_detects_causal_dependency_given_independent_signal(
+        self,
+    ) -> None:
         """CTE(X->Y | Z) ~= ln(2) nats when Y[t] = X[t-1] and Z is independent: conditioning on an irrelevant signal does not suppress the detected transfer."""
         rng = np.random.default_rng(42)
         x = rng.integers(0, 2, 500).astype(float)
         y = np.roll(x, 1)
         sig_x = AnalogSignal(x * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(y * pq.mV, sampling_rate=1.0 * pq.kHz)
-        cond = AnalogSignal(rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        cond = AnalogSignal(
+            rng.integers(0, 2, 500).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz
+        )
 
         result = TransferEntropyStrategy(DiscreteTransferEntropyConfig()).run_analysis(
-            TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y], cond=[cond])
+            TransferEntropyStrategyDataInput(
+                sources=[sig_x], dests=[sig_y], cond=[cond]
+            )
         )
 
         self.assertAlmostEqual(result.matrix[0].value, np.log(2), delta=0.05)
@@ -216,7 +238,9 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
         cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
 
         result = TransferEntropyStrategy(KernelTransferEntropyConfig()).run_analysis(
-            TransferEntropyStrategyDataInput(sources=[sig_x], dests=[sig_y], cond=[cond])
+            TransferEntropyStrategyDataInput(
+                sources=[sig_x], dests=[sig_y], cond=[cond]
+            )
         )
 
         self.assertIsInstance(result, MatrixResult)

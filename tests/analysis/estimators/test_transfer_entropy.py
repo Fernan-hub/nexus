@@ -23,11 +23,16 @@ class TestDiscreteTransferEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(DiscreteTransferEntropyConfig().get_estimator_class(), DiscreteTEEstimator)
+        self.assertIs(
+            DiscreteTransferEntropyConfig().get_estimator_class(), DiscreteTEEstimator
+        )
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
-        self.assertIs(DiscreteTransferEntropyConfig().get_conditional_estimator_class(), DiscreteCTEEstimator)
+        self.assertIs(
+            DiscreteTransferEntropyConfig().get_conditional_estimator_class(),
+            DiscreteCTEEstimator,
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
@@ -35,12 +40,42 @@ class TestDiscreteTransferEntropyConfig(unittest.TestCase):
             Scenario(
                 name="default",
                 given=Given(data={"config": DiscreteTransferEntropyConfig()}),
-                expected=Expected(data={"kwargs": {"step_size": 1, "src_hist_len": 1, "dest_hist_len": 1, "prop_time": 0, "offset": 0}}),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "step_size": 1,
+                            "src_hist_len": 1,
+                            "dest_hist_len": 1,
+                            "prop_time": 0,
+                            "offset": 0,
+                        }
+                    }
+                ),
             ),
             Scenario(
                 name="custom",
-                given=Given(data={"config": DiscreteTransferEntropyConfig(step_size=2, src_hist_len=3, dest_hist_len=2, prop_time=1, offset=5)}),
-                expected=Expected(data={"kwargs": {"step_size": 2, "src_hist_len": 3, "dest_hist_len": 2, "prop_time": 1, "offset": 5}}),
+                given=Given(
+                    data={
+                        "config": DiscreteTransferEntropyConfig(
+                            step_size=2,
+                            src_hist_len=3,
+                            dest_hist_len=2,
+                            prop_time=1,
+                            offset=5,
+                        )
+                    }
+                ),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "step_size": 2,
+                            "src_hist_len": 3,
+                            "dest_hist_len": 2,
+                            "prop_time": 1,
+                            "offset": 5,
+                        }
+                    }
+                ),
             ),
         ]
 
@@ -57,11 +92,16 @@ class TestKernelTransferEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
-        self.assertIs(KernelTransferEntropyConfig().get_estimator_class(), KernelTEEstimator)
+        self.assertIs(
+            KernelTransferEntropyConfig().get_estimator_class(), KernelTEEstimator
+        )
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:
-        self.assertIs(KernelTransferEntropyConfig().get_conditional_estimator_class(), KernelCTEEstimator)
+        self.assertIs(
+            KernelTransferEntropyConfig().get_conditional_estimator_class(),
+            KernelCTEEstimator,
+        )
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
@@ -69,12 +109,51 @@ class TestKernelTransferEntropyConfig(unittest.TestCase):
             Scenario(
                 name="default",
                 given=Given(data={"config": KernelTransferEntropyConfig()}),
-                expected=Expected(data={"kwargs": {"step_size": 1, "src_hist_len": 1, "dest_hist_len": 1, "prop_time": 0, "offset": 0, "bandwidth": 1.0, "kernel": "gaussian", "workers": 1}}),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "step_size": 1,
+                            "src_hist_len": 1,
+                            "dest_hist_len": 1,
+                            "prop_time": 0,
+                            "offset": 0,
+                            "bandwidth": 1.0,
+                            "kernel": "gaussian",
+                            "workers": 1,
+                        }
+                    }
+                ),
             ),
             Scenario(
                 name="custom",
-                given=Given(data={"config": KernelTransferEntropyConfig(step_size=2, src_hist_len=3, dest_hist_len=2, prop_time=1, offset=5, bandwidth=0.5, kernel=KernelType.BOX, workers=2)}),
-                expected=Expected(data={"kwargs": {"step_size": 2, "src_hist_len": 3, "dest_hist_len": 2, "prop_time": 1, "offset": 5, "bandwidth": 0.5, "kernel": "box", "workers": 2}}),
+                given=Given(
+                    data={
+                        "config": KernelTransferEntropyConfig(
+                            step_size=2,
+                            src_hist_len=3,
+                            dest_hist_len=2,
+                            prop_time=1,
+                            offset=5,
+                            bandwidth=0.5,
+                            kernel=KernelType.BOX,
+                            workers=2,
+                        )
+                    }
+                ),
+                expected=Expected(
+                    data={
+                        "kwargs": {
+                            "step_size": 2,
+                            "src_hist_len": 3,
+                            "dest_hist_len": 2,
+                            "prop_time": 1,
+                            "offset": 5,
+                            "bandwidth": 0.5,
+                            "kernel": "box",
+                            "workers": 2,
+                        }
+                    }
+                ),
             ),
         ]
 
