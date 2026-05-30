@@ -1,5 +1,6 @@
 """Tests for ConcatenationStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock
 
@@ -12,6 +13,7 @@ from nexus.core.interfaces import SignalProxy
 from nexus.processing.strategies.concatenation_strategy import (
     ConcatenationStrategy,
     ConcatenationStrategyDataInput,
+    ConcatenationStrategyFilterCriteria,
     ConcatenationStrategyProxyInput,
 )
 from tests.utils import Expected, Given, Scenario
@@ -77,6 +79,39 @@ class TestConcatenationStrategy(unittest.TestCase):
                     result[0].output_annotations[0],
                     scenario.expected.data["output_annotations"],
                 )
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = ConcatenationStrategy()
+
+        self.assertIs(strategy.filter_criteria_type, ConcatenationStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_proxy_input_type(self) -> None:
+        strategy = ConcatenationStrategy()
+
+        self.assertIs(strategy.proxy_input_type, ConcatenationStrategyProxyInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = ConcatenationStrategy()
+
+        self.assertIs(strategy.data_input_type, ConcatenationStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = ConcatenationStrategy()
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, proxy_fields)
+        self.assertEqual(proxy_fields, data_fields)
 
 
 class TestIntegrationConcatenationStrategy(unittest.TestCase):

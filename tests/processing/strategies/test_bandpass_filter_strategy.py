@@ -1,5 +1,6 @@
 """Tests for BandpassFilterStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -12,6 +13,7 @@ from nexus.core.interfaces import SignalProxy
 from nexus.processing.strategies.bandpass_filter_strategy import (
     BandpassFilterStrategy,
     BandpassFilterStrategyDataInput,
+    BandpassFilterStrategyFilterCriteria,
     BandpassFilterStrategyProxyInput,
 )
 from tests.utils import Expected, Given, Scenario
@@ -120,6 +122,39 @@ class TestBandpassFilterStrategy(unittest.TestCase):
 
                 with self.assertRaises(scenario.expected.exceptions["apply"]):
                     strategy.apply(input_data)
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = BandpassFilterStrategy()
+
+        self.assertIs(strategy.filter_criteria_type, BandpassFilterStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_proxy_input_type(self) -> None:
+        strategy = BandpassFilterStrategy()
+
+        self.assertIs(strategy.proxy_input_type, BandpassFilterStrategyProxyInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = BandpassFilterStrategy()
+
+        self.assertIs(strategy.data_input_type, BandpassFilterStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = BandpassFilterStrategy()
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, proxy_fields)
+        self.assertEqual(proxy_fields, data_fields)
 
 
 class TestIntegrationBandpassFilterStrategy(unittest.TestCase):

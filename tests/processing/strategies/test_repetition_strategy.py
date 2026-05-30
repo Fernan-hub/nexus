@@ -1,5 +1,6 @@
 """Tests for RepetitionStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock
 
@@ -12,6 +13,7 @@ from nexus.core.interfaces import SignalProxy
 from nexus.processing.strategies.repetition_strategy import (
     RepetitionStrategy,
     RepetitionStrategyDataInput,
+    RepetitionStrategyFilterCriteria,
     RepetitionStrategyProxyInput,
 )
 from tests.utils import Expected, Given, Scenario
@@ -66,6 +68,39 @@ class TestRepetitionStrategy(unittest.TestCase):
             with self.subTest(msg=scenario.name):
                 with self.assertRaises(scenario.expected.exceptions["init"]):
                     RepetitionStrategy(repetitions=scenario.given.data["repetitions"])
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = RepetitionStrategy(repetitions=1)
+
+        self.assertIs(strategy.filter_criteria_type, RepetitionStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_proxy_input_type(self) -> None:
+        strategy = RepetitionStrategy(repetitions=1)
+
+        self.assertIs(strategy.proxy_input_type, RepetitionStrategyProxyInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = RepetitionStrategy(repetitions=1)
+
+        self.assertIs(strategy.data_input_type, RepetitionStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = RepetitionStrategy(repetitions=1)
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, proxy_fields)
+        self.assertEqual(proxy_fields, data_fields)
 
 
 class TestIntegrationRepetitionStrategy(unittest.TestCase):

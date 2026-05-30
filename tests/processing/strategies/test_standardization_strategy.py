@@ -1,5 +1,6 @@
 """Tests for StandardizationStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock
 
@@ -12,6 +13,7 @@ from nexus.core.interfaces import SignalProxy
 from nexus.processing.strategies.standardization_strategy import (
     StandardizationStrategy,
     StandardizationStrategyDataInput,
+    StandardizationStrategyFilterCriteria,
     StandardizationStrategyProxyInput,
 )
 
@@ -43,6 +45,39 @@ class TestStandardizationStrategy(unittest.TestCase):
         self.assertEqual(
             result[1].output_annotations[0], {"type": "voltage", "standardized": True}
         )
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = StandardizationStrategy()
+
+        self.assertIs(strategy.filter_criteria_type, StandardizationStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_proxy_input_type(self) -> None:
+        strategy = StandardizationStrategy()
+
+        self.assertIs(strategy.proxy_input_type, StandardizationStrategyProxyInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = StandardizationStrategy()
+
+        self.assertIs(strategy.data_input_type, StandardizationStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = StandardizationStrategy()
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, proxy_fields)
+        self.assertEqual(proxy_fields, data_fields)
 
 
 class TestIntegrationStandardizationStrategy(unittest.TestCase):

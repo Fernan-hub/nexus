@@ -1,5 +1,6 @@
 """Tests for SpikeExtractionStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -12,6 +13,7 @@ from nexus.core.interfaces import SignalProxy
 from nexus.processing.strategies.spike_extraction_strategy import (
     SpikeExtractionStrategy,
     SpikeExtractionStrategyDataInput,
+    SpikeExtractionStrategyFilterCriteria,
     SpikeExtractionStrategyProxyInput,
 )
 from tests.utils import Expected, Given, Scenario
@@ -82,6 +84,39 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             strategy.apply(input_data)
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = SpikeExtractionStrategy()
+
+        self.assertIs(strategy.filter_criteria_type, SpikeExtractionStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_proxy_input_type(self) -> None:
+        strategy = SpikeExtractionStrategy()
+
+        self.assertIs(strategy.proxy_input_type, SpikeExtractionStrategyProxyInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = SpikeExtractionStrategy()
+
+        self.assertIs(strategy.data_input_type, SpikeExtractionStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = SpikeExtractionStrategy()
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, proxy_fields)
+        self.assertEqual(proxy_fields, data_fields)
 
 
 class TestIntegrationSpikeExtractionStrategy(unittest.TestCase):
