@@ -39,11 +39,8 @@ class KLDStrategy(EstimatorBasedAnalysisStrategy):
     def _get_estimator_result(
         self, signal_p: DataObject, signal_q: DataObject
     ) -> float:
-        approach = self._estimator_class.get_approach_name()
-        estimator = im.kld(
-            signal_p, signal_q, approach=approach, **self._estimator_kwargs
-        )
-        return estimator.result()
+        approach = self._config.get_approach_name()
+        return im.kld(signal_p, signal_q, approach=approach, **self._estimator_kwargs)
 
     def run_analysis(self, data_input: KLDStrategyDataInput) -> MatrixResult:
         columns: list[str] = [
