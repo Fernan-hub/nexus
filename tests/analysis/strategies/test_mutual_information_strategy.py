@@ -1,0 +1,168 @@
+"""Tests for MutualInformationStrategy."""
+
+import unittest
+from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
+import quantities as pq
+from neo.core import AnalogSignal
+
+from nexus.analysis.estimators.mutual_information import DiscreteMutualInformationConfig
+from nexus.analysis.results.matrix_result import MatrixResult
+from nexus.analysis.strategies.mutual_information_strategy import (
+    MutualInformationStrategy,
+    MutualInformationStrategyDataInput,
+)
+from tests.utils import Expected, Given, Scenario
+
+
+def _make_signal(name: str | None = None) -> AnalogSignal:
+    return AnalogSignal(
+        np.array([1.0, 2.0, 3.0]) * pq.mV,
+        sampling_rate=1.0 * pq.kHz,
+        name=name,
+    )
+
+
+class TestMutualInformationStrategy(unittest.TestCase):
+    """Unit tests for MutualInformationStrategy."""
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    @patch("nexus.analysis.estimators.mutual_information.DiscreteMIEstimator")
+    def test_run_analysis(self, mock_estimator_class: MagicMock) -> None:
+        """Test that run_analysis computes one MI value per (x, y) pair."""
+        scenarios = [
+            Scenario(
+                name="one x one y",
+                given=Given(
+                    data={
+                        "data_x": [_make_signal()],
+                        "data_y": [_make_signal()],
+                    }
+                ),
+                expected=Expected(data={"element_count": 1}),
+            ),
+            Scenario(
+                name="two x two y",
+                given=Given(
+                    data={
+                        "data_x": [_make_signal(), _make_signal()],
+                        "data_y": [_make_signal(), _make_signal()],
+                    }
+                ),
+                expected=Expected(data={"element_count": 4}),
+            ),
+        ]
+
+        for scenario in scenarios:
+            with self.subTest(msg=scenario.name):
+                mock_estimator_class.reset_mock()
+                mock_estimator_class.return_value.result.return_value = 0.5
+
+                strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+                data_input = MutualInformationStrategyDataInput(
+                    data_x=scenario.given.data["data_x"],
+                    data_y=scenario.given.data["data_y"],
+                )
+
+                result = strategy.run_analysis(data_input)
+
+                self.assertIsInstance(result, MatrixResult)
+                self.assertEqual(result.algorithm, "mutual_information")
+                self.assertEqual(
+                    len(result.matrix), scenario.expected.data["element_count"]
+                )
+                self.assertEqual(
+                    mock_estimator_class.call_count,
+                    scenario.expected.data["element_count"],
+                )
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    @patch("nexus.analysis.estimators.mutual_information.DiscreteMIEstimator")
+    def test_run_analysis_labels(self, mock_estimator_class: MagicMock) -> None:
+        """Test that signal names are used as labels, falling back to index when absent."""
+        scenarios = [
+            Scenario(
+                name="named signals",
+                given=Given(data={"data_x": _make_signal(name="signal_a"), "data_y": _make_signal(name="signal_b")}),
+                expected=Expected(data={"row": "signal_a", "column": "signal_b"}),
+            ),
+            Scenario(
+                name="unnamed signals",
+                given=Given(data={"data_x": _make_signal(name=None), "data_y": _make_signal(name=None)}),
+                expected=Expected(data={"row": "data_x_0", "column": "data_y_0"}),
+            ),
+        ]
+
+        for scenario in scenarios:
+            with self.subTest(msg=scenario.name):
+                mock_estimator_class.reset_mock()
+                mock_estimator_class.return_value.result.return_value = 0.5
+
+                strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+                data_input = MutualInformationStrategyDataInput(
+                    data_x=[scenario.given.data["data_x"]],
+                    data_y=[scenario.given.data["data_y"]],
+                )
+
+                result = strategy.run_analysis(data_input)
+
+                self.assertEqual(result.matrix[0].row, scenario.expected.data["row"])
+                self.assertEqual(result.matrix[0].column, scenario.expected.data["column"])
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    @patch("nexus.analysis.estimators.mutual_information.DiscreteMIEstimator")
+    def test_run_analysis_result_values_come_from_estimator(
+        self, mock_estimator_class: MagicMock
+    ) -> None:
+        """Test that element values in the matrix come from the estimator."""
+        mock_estimator_class.return_value.result.side_effect = [0.3, 0.7, 0.1, 0.9]
+
+        strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+        data_input = MutualInformationStrategyDataInput(
+            data_x=[_make_signal(), _make_signal()],
+            data_y=[_make_signal(), _make_signal()],
+        )
+
+        result = strategy.run_analysis(data_input)
+
+        values = [el.value for el in result.matrix]
+        self.assertAlmostEqual(values[0], 0.3)
+        self.assertAlmostEqual(values[1], 0.7)
+        self.assertAlmostEqual(values[2], 0.1)
+        self.assertAlmostEqual(values[3], 0.9)
+
+
+class TestIntegrationMutualInformationStrategy(unittest.TestCase):
+    """Integration tests for MutualInformationStrategy against real infomeasure estimators."""
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    def test_mi_of_signal_with_itself_equals_entropy(self) -> None:
+        """MI(X, X) = H(X): mutual information of a signal with itself equals its entropy."""
+        data = np.tile([0.0, 1.0], 50)
+        sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
+            MutualInformationStrategyDataInput(data_x=[sig], data_y=[sig])
+        )
+
+        self.assertAlmostEqual(result.matrix[0].value, np.log(2), places=10)
+
+    @pytest.mark.integration
+    @pytest.mark.strategy
+    def test_mi_of_independent_signals_is_negligible(self) -> None:
+        """MI(X, Y) ≈ 0 when X and Y are drawn independently."""
+        rng = np.random.default_rng(42)
+        sig_x = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+        sig_y = AnalogSignal(rng.integers(0, 2, 1000).astype(float) * pq.mV, sampling_rate=1.0 * pq.kHz)
+
+        result = MutualInformationStrategy(DiscreteMutualInformationConfig()).run_analysis(
+            MutualInformationStrategyDataInput(data_x=[sig_x], data_y=[sig_y])
+        )
+
+        self.assertLess(abs(result.matrix[0].value), 0.01)
