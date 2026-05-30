@@ -1,6 +1,7 @@
 """Tests for MutualInformationStrategy."""
 
 import math
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -17,6 +18,7 @@ from nexus.analysis.results.matrix_result import MatrixResult
 from nexus.analysis.strategies.mutual_information_strategy import (
     MutualInformationStrategy,
     MutualInformationStrategyDataInput,
+    MutualInformationStrategyFilterCriteria,
 )
 from tests.utils import Expected, Given, Scenario
 
@@ -151,6 +153,30 @@ class TestMutualInformationStrategy(unittest.TestCase):
         self.assertAlmostEqual(values[1], 0.7)
         self.assertAlmostEqual(values[2], 0.1)
         self.assertAlmostEqual(values[3], 0.9)
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+
+        self.assertIs(strategy.filter_criteria_type, MutualInformationStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+
+        self.assertIs(strategy.data_input_type, MutualInformationStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, data_fields)
 
 
 class TestIntegrationMutualInformationStrategy(unittest.TestCase):

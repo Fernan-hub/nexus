@@ -1,6 +1,7 @@
 """Tests for EntropyStrategy."""
 
 import math
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -14,6 +15,7 @@ from nexus.analysis.results.vector_result import VectorResult
 from nexus.analysis.strategies.entropy_strategy import (
     EntropyStrategy,
     EntropyStrategyDataInput,
+    EntropyStrategyFilterCriteria,
 )
 from tests.utils import Expected, Given, Scenario
 
@@ -125,6 +127,30 @@ class TestEntropyStrategy(unittest.TestCase):
                 self.assertEqual(
                     list(result.vector.columns), [scenario.expected.data["column"]]
                 )
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = EntropyStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.filter_criteria_type, EntropyStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = EntropyStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.data_input_type, EntropyStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = EntropyStrategy(DiscreteEntropyConfig())
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, data_fields)
 
 
 class TestIntegrationEntropyStrategy(unittest.TestCase):

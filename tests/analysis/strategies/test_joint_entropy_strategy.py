@@ -1,5 +1,6 @@
 """Tests for JointEntropyStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -13,6 +14,7 @@ from nexus.analysis.results.scalar_result import ScalarResult
 from nexus.analysis.strategies.joint_entropy_strategy import (
     JointEntropyStrategy,
     JointEntropyStrategyDataInput,
+    JointEntropyStrategyFilterCriteria,
 )
 from tests.utils import Expected, Given, Scenario
 
@@ -97,6 +99,30 @@ class TestJointEntropyStrategy(unittest.TestCase):
         result = strategy.run_analysis(data_input)
 
         self.assertEqual(result.label, "Joint entropy of signal_0, signal_1")
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = JointEntropyStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.filter_criteria_type, JointEntropyStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = JointEntropyStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.data_input_type, JointEntropyStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = JointEntropyStrategy(DiscreteEntropyConfig())
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, data_fields)
 
 
 class TestIntegrationJointEntropyStrategy(unittest.TestCase):

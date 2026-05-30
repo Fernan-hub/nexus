@@ -1,5 +1,6 @@
 """Tests for KLDStrategy."""
 
+import dataclasses
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -13,6 +14,7 @@ from nexus.analysis.results.matrix_result import MatrixResult
 from nexus.analysis.strategies.kld_strategy import (
     KLDStrategy,
     KLDStrategyDataInput,
+    KLDStrategyFilterCriteria,
 )
 from tests.utils import Expected, Given, Scenario
 
@@ -129,6 +131,30 @@ class TestKLDStrategy(unittest.TestCase):
                 self.assertEqual(
                     result.matrix[0].column, scenario.expected.data["column"]
                 )
+
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_filter_criteria_type(self) -> None:
+        strategy = KLDStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.filter_criteria_type, KLDStrategyFilterCriteria)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_data_input_type(self) -> None:
+        strategy = KLDStrategy(DiscreteEntropyConfig())
+
+        self.assertIs(strategy.data_input_type, KLDStrategyDataInput)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_input_types_share_field_names(self) -> None:
+        strategy = KLDStrategy(DiscreteEntropyConfig())
+        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
+
+        self.assertEqual(filter_fields, data_fields)
 
 
 class TestIntegrationKLDStrategy(unittest.TestCase):
