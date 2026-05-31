@@ -154,13 +154,14 @@ class TestMutualInformationStrategy(unittest.TestCase):
         self.assertAlmostEqual(values[2], 0.1)
         self.assertAlmostEqual(values[3], 0.9)
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
 
-        self.assertIs(strategy.filter_criteria_type, MutualInformationStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, MutualInformationStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -173,7 +174,9 @@ class TestMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 
         self.assertEqual(filter_fields, data_fields)

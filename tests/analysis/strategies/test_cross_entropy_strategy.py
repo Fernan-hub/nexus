@@ -127,7 +127,6 @@ class TestCrossEntropyStrategy(unittest.TestCase):
                     result.matrix[0].column, scenario.expected.data["column"]
                 )
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
@@ -146,7 +145,9 @@ class TestCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = CrossEntropyStrategy(DiscreteEntropyConfig())
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 
         self.assertEqual(filter_fields, data_fields)

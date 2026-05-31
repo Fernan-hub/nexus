@@ -29,7 +29,9 @@ class TestDiscreteMutualInformationConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_approach_name(self) -> None:
-        self.assertEqual(DiscreteMutualInformationConfig().get_approach_name(), "discrete")
+        self.assertEqual(
+            DiscreteMutualInformationConfig().get_approach_name(), "discrete"
+        )
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class(self) -> None:

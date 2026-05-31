@@ -152,13 +152,14 @@ class TestTransferEntropyStrategy(unittest.TestCase):
         self.assertAlmostEqual(values[0], 0.2)
         self.assertAlmostEqual(values[1], 0.8)
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = TransferEntropyStrategy(DiscreteTransferEntropyConfig())
 
-        self.assertIs(strategy.filter_criteria_type, TransferEntropyStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, TransferEntropyStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -171,7 +172,9 @@ class TestTransferEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = TransferEntropyStrategy(DiscreteTransferEntropyConfig())
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 
         self.assertEqual(filter_fields, data_fields)

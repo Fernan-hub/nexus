@@ -80,13 +80,14 @@ class TestConcatenationStrategy(unittest.TestCase):
                     scenario.expected.data["output_annotations"],
                 )
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = ConcatenationStrategy()
 
-        self.assertIs(strategy.filter_criteria_type, ConcatenationStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, ConcatenationStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -106,7 +107,9 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = ConcatenationStrategy()
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 

@@ -85,13 +85,14 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
         with self.assertRaises(TypeError):
             strategy.apply(input_data)
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = SpikeExtractionStrategy()
 
-        self.assertIs(strategy.filter_criteria_type, SpikeExtractionStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, SpikeExtractionStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -111,7 +112,9 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = SpikeExtractionStrategy()
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 

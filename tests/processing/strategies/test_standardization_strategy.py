@@ -46,13 +46,14 @@ class TestStandardizationStrategy(unittest.TestCase):
             result[1].output_annotations[0], {"type": "voltage", "standardized": True}
         )
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = StandardizationStrategy()
 
-        self.assertIs(strategy.filter_criteria_type, StandardizationStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, StandardizationStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -72,7 +73,9 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = StandardizationStrategy()
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 

@@ -69,7 +69,6 @@ class TestRepetitionStrategy(unittest.TestCase):
                 with self.assertRaises(scenario.expected.exceptions["init"]):
                     RepetitionStrategy(repetitions=scenario.given.data["repetitions"])
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
@@ -95,7 +94,9 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = RepetitionStrategy(repetitions=1)
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 

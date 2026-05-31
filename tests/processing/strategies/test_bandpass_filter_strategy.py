@@ -123,13 +123,14 @@ class TestBandpassFilterStrategy(unittest.TestCase):
                 with self.assertRaises(scenario.expected.exceptions["apply"]):
                     strategy.apply(input_data)
 
-
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
         strategy = BandpassFilterStrategy()
 
-        self.assertIs(strategy.filter_criteria_type, BandpassFilterStrategyFilterCriteria)
+        self.assertIs(
+            strategy.filter_criteria_type, BandpassFilterStrategyFilterCriteria
+        )
 
     @pytest.mark.unit
     @pytest.mark.strategy
@@ -149,7 +150,9 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
         strategy = BandpassFilterStrategy()
-        filter_fields = {f.name for f in dataclasses.fields(strategy.filter_criteria_type)}
+        filter_fields = {
+            f.name for f in dataclasses.fields(strategy.filter_criteria_type)
+        }
         proxy_fields = {f.name for f in dataclasses.fields(strategy.proxy_input_type)}
         data_fields = {f.name for f in dataclasses.fields(strategy.data_input_type)}
 
