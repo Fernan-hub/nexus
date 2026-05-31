@@ -85,7 +85,7 @@ class TestCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.entropy.DiscreteEntropyEstimator")
     def test_run_analysis_labels(self, mock_estimator_class: MagicMock) -> None:
-        """Test that signal names are used as labels, falling back to index when absent."""
+        """Test that signal names are used as labels or indices when absent."""
         scenarios = [
             Scenario(
                 name="named signals",
@@ -130,6 +130,7 @@ class TestCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns CrossEntropyStrategyFilterCriteria as filter_criteria_type."""
         strategy = CrossEntropyStrategy(DiscreteEntropyConfig())
 
         self.assertIs(strategy.filter_criteria_type, CrossEntropyStrategyFilterCriteria)
@@ -137,6 +138,7 @@ class TestCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns CrossEntropyStrategyDataInput as data_input_type."""
         strategy = CrossEntropyStrategy(DiscreteEntropyConfig())
 
         self.assertIs(strategy.data_input_type, CrossEntropyStrategyDataInput)
@@ -144,6 +146,7 @@ class TestCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """filter_criteria_type and data_input_type share identical field names."""
         strategy = CrossEntropyStrategy(DiscreteEntropyConfig())
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)
@@ -154,12 +157,12 @@ class TestCrossEntropyStrategy(unittest.TestCase):
 
 
 class TestIntegrationCrossEntropyStrategy(unittest.TestCase):
-    """Integration tests for CrossEntropyStrategy against real infomeasure estimators."""
+    """Integration tests for CrossEntropyStrategy against infomeasure estimators."""
 
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_cross_entropy_of_identical_distributions_equals_entropy(self) -> None:
-        """H(P, P) = H(P): cross-entropy collapses to entropy when both distributions are the same."""
+        """H(P, P) = H(P): cross-entropy is the entropy when both distributions are equal."""
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 

@@ -61,6 +61,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns BinarizationStrategyFilterCriteria as filter_criteria_type."""
         strategy = BinarizationStrategy()
 
         self.assertIs(strategy.filter_criteria_type, BinarizationStrategyFilterCriteria)
@@ -68,6 +69,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns BinarizationStrategyProxyInput as proxy_input_type."""
         strategy = BinarizationStrategy()
 
         self.assertIs(strategy.proxy_input_type, BinarizationStrategyProxyInput)
@@ -75,6 +77,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns BinarizationStrategyDataInput as data_input_type."""
         strategy = BinarizationStrategy()
 
         self.assertIs(strategy.data_input_type, BinarizationStrategyDataInput)
@@ -82,6 +85,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = BinarizationStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

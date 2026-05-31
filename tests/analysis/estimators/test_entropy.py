@@ -18,20 +18,24 @@ class TestDiscreteEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
+        """Returns DiscreteEntropyEstimator as the estimator class."""
         self.assertIs(
             DiscreteEntropyConfig().get_estimator_class(), DiscreteEntropyEstimator
         )
 
     @pytest.mark.unit
     def test_get_approach_name(self) -> None:
+        """Returns 'discrete' as the approach name string used by infomeasure."""
         self.assertEqual(DiscreteEntropyConfig().get_approach_name(), "discrete")
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
+        """Returns empty dict as no fields are passed to the estimator."""
         self.assertEqual(DiscreteEntropyConfig().get_estimator_kwargs(), {})
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class_raises(self) -> None:
+        """Raises NotImplementedError as entropy lacks a conditional estimator."""
         with self.assertRaises(NotImplementedError):
             DiscreteEntropyConfig().get_conditional_estimator_class()
 
@@ -41,16 +45,19 @@ class TestKernelEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_class(self) -> None:
+        """Returns KernelEntropyEstimator as the estimator class."""
         self.assertIs(
             KernelEntropyConfig().get_estimator_class(), KernelEntropyEstimator
         )
 
     @pytest.mark.unit
     def test_get_approach_name(self) -> None:
+        """Returns 'kernel' as the approach name string used by infomeasure."""
         self.assertEqual(KernelEntropyConfig().get_approach_name(), "kernel")
 
     @pytest.mark.unit
     def test_get_estimator_kwargs(self) -> None:
+        """Returns bandwidth, kernel, and workers in the estimator kwargs dict."""
         scenarios = [
             Scenario(
                 name="default",
@@ -85,11 +92,12 @@ class TestKernelEntropyConfig(unittest.TestCase):
 
     @pytest.mark.unit
     def test_get_estimator_kwargs_kernel_is_string_not_enum(self) -> None:
-        """kernel must be a plain string, not a KernelType enum, for infomeasure compatibility."""
+        """kernel must be a plain string for infomeasure compatibility."""
         kwargs = KernelEntropyConfig().get_estimator_kwargs()
         self.assertIsInstance(kwargs["kernel"], str)
 
     @pytest.mark.unit
     def test_get_conditional_estimator_class_raises(self) -> None:
+        """Raises NotImplementedError as entropy lacks a conditional estimator."""
         with self.assertRaises(NotImplementedError):
             KernelEntropyConfig().get_conditional_estimator_class()

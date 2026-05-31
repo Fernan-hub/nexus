@@ -88,6 +88,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns SpikeExtractionStrategyFilterCriteria as filter_criteria_type."""
         strategy = SpikeExtractionStrategy()
 
         self.assertIs(
@@ -97,6 +98,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns SpikeExtractionStrategyProxyInput as proxy_input_type."""
         strategy = SpikeExtractionStrategy()
 
         self.assertIs(strategy.proxy_input_type, SpikeExtractionStrategyProxyInput)
@@ -104,6 +106,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns SpikeExtractionStrategyDataInput as data_input_type."""
         strategy = SpikeExtractionStrategy()
 
         self.assertIs(strategy.data_input_type, SpikeExtractionStrategyDataInput)
@@ -111,6 +114,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = SpikeExtractionStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

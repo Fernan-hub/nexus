@@ -157,6 +157,7 @@ class TestMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns MutualInformationStrategyFilterCriteria as filter_criteria_type."""
         strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
 
         self.assertIs(
@@ -166,6 +167,7 @@ class TestMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns MutualInformationStrategyDataInput as data_input_type."""
         strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
 
         self.assertIs(strategy.data_input_type, MutualInformationStrategyDataInput)
@@ -173,6 +175,7 @@ class TestMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """filter_criteria_type and data_input_type share identical field names."""
         strategy = MutualInformationStrategy(DiscreteMutualInformationConfig())
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

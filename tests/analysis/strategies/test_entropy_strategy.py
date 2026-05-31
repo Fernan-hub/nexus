@@ -131,6 +131,7 @@ class TestEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns EntropyStrategyFilterCriteria as filter_criteria_type."""
         strategy = EntropyStrategy(DiscreteEntropyConfig())
 
         self.assertIs(strategy.filter_criteria_type, EntropyStrategyFilterCriteria)
@@ -138,6 +139,7 @@ class TestEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns EntropyStrategyDataInput as data_input_type."""
         strategy = EntropyStrategy(DiscreteEntropyConfig())
 
         self.assertIs(strategy.data_input_type, EntropyStrategyDataInput)
@@ -145,6 +147,7 @@ class TestEntropyStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """filter_criteria_type and data_input_type share identical field names."""
         strategy = EntropyStrategy(DiscreteEntropyConfig())
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

@@ -16,6 +16,7 @@ class TestResultsExporter(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_export_result(self) -> None:
+        """Calls accept on the underlying LazyAnalysisResult with the exporter."""
         lazy_result = MagicMock(spec=LazyAnalysisResult)
         exporter_strategy = MagicMock(spec=ExportationStrategy)
 

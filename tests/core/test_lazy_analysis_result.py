@@ -33,6 +33,7 @@ class TestLazyAnalysisResult(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_accept(self) -> None:
+        """Loads proxies, runs analysis, and dispatches the result to the exporter."""
         lazy_result = LazyAnalysisResult(
             input_proxies={"source": [self.proxy]},
             analysis_strategy=self.strategy,
@@ -46,6 +47,7 @@ class TestLazyAnalysisResult(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_accept_does_not_recompute_on_second_call(self) -> None:
+        """Calls proxy.load and run_analysis once even when accept is called twice."""
         lazy_result = LazyAnalysisResult(
             input_proxies={"source": [self.proxy]},
             analysis_strategy=self.strategy,
@@ -59,6 +61,7 @@ class TestLazyAnalysisResult(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_accept_builds_data_input_from_multi_group_proxies(self) -> None:
+        """Passes signals by group name to data_input_type with multiple groups."""
         proxy_src = MagicMock(spec=SignalProxy)
         signal_src = MagicMock()
         proxy_src.load.return_value = signal_src
@@ -131,6 +134,7 @@ class TestIntegrationLazyAnalysisResult(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.core
     def test_accept(self) -> None:
+        """End-to-end: proxy loads, analysis runs, result reaches the exporter."""
         strategy = _StubAnalysisStrategy()
         exporter = _StubExportationStrategy()
 

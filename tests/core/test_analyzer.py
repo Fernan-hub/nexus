@@ -27,6 +27,7 @@ class TestAnalyzer(unittest.TestCase):
     def test_analyze_data_returns_lazy_analysis_result(
         self, mock_lazy_result_cls: MagicMock
     ) -> None:
+        """Returns a LazyAnalysisResult built from the proxies dict and strategy."""
         proxy = MagicMock(spec=SignalProxy)
         proxies_by_criteria = {"source": [proxy]}
         data = MagicMock(spec=NeuroData)
@@ -46,6 +47,7 @@ class TestAnalyzer(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_analyze_data_queries_neuro_data_with_non_none_criteria(self) -> None:
+        """Passes non-None criteria fields to get_proxies_by_criteria_dict."""
         data = MagicMock(spec=NeuroData)
         data.get_proxies_by_criteria_dict.return_value = {}
 
@@ -64,6 +66,7 @@ class TestAnalyzer(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_analyze_data_filters_none_criteria_values(self) -> None:
+        """Strips criteria keys whose value is None before querying NeuroData."""
         data = MagicMock(spec=NeuroData)
         data.get_proxies_by_criteria_dict.return_value = {}
 
@@ -117,6 +120,7 @@ class TestIntegrationAnalyzer(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.core
     def test_analyze_data_captures_matching_proxies(self) -> None:
+        """Result contains the proxies matching filter criteria in real NeuroData."""
         strategy = _StubAnalysisStrategy()
         filter_criteria = _StubFilterCriteria(source={"model": "efish"})
 

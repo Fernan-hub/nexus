@@ -49,6 +49,7 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns StandardizationStrategyFilterCriteria as filter_criteria_type."""
         strategy = StandardizationStrategy()
 
         self.assertIs(
@@ -58,6 +59,7 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns StandardizationStrategyProxyInput as proxy_input_type."""
         strategy = StandardizationStrategy()
 
         self.assertIs(strategy.proxy_input_type, StandardizationStrategyProxyInput)
@@ -65,6 +67,7 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns StandardizationStrategyDataInput as data_input_type."""
         strategy = StandardizationStrategy()
 
         self.assertIs(strategy.data_input_type, StandardizationStrategyDataInput)
@@ -72,6 +75,7 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = StandardizationStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

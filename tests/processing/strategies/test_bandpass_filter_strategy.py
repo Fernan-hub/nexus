@@ -126,6 +126,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns BandpassFilterStrategyFilterCriteria as filter_criteria_type."""
         strategy = BandpassFilterStrategy()
 
         self.assertIs(
@@ -135,6 +136,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns BandpassFilterStrategyProxyInput as proxy_input_type."""
         strategy = BandpassFilterStrategy()
 
         self.assertIs(strategy.proxy_input_type, BandpassFilterStrategyProxyInput)
@@ -142,6 +144,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns BandpassFilterStrategyDataInput as data_input_type."""
         strategy = BandpassFilterStrategy()
 
         self.assertIs(strategy.data_input_type, BandpassFilterStrategyDataInput)
@@ -149,6 +152,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = BandpassFilterStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

@@ -93,6 +93,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns BinnedSpikeTrainStrategyFilterCriteria as filter_criteria_type."""
         strategy = BinnedSpikeTrainStrategy()
 
         self.assertIs(
@@ -102,6 +103,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns BinnedSpikeTrainStrategyProxyInput as proxy_input_type."""
         strategy = BinnedSpikeTrainStrategy()
 
         self.assertIs(strategy.proxy_input_type, BinnedSpikeTrainStrategyProxyInput)
@@ -109,6 +111,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns BinnedSpikeTrainStrategyDataInput as data_input_type."""
         strategy = BinnedSpikeTrainStrategy()
 
         self.assertIs(strategy.data_input_type, BinnedSpikeTrainStrategyDataInput)
@@ -116,6 +119,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = BinnedSpikeTrainStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

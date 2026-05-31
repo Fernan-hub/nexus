@@ -42,6 +42,7 @@ class TestProcessor(unittest.TestCase):
     def test_process(
         self, MockOperationNode: MagicMock, MockComputedSignalProxy: MagicMock
     ) -> None:
+        """Creates OperationNode and proxy per node def, merging custom_annotations."""
         scenarios = [
             Scenario(
                 name="no_custom_annotations",
@@ -192,6 +193,7 @@ class TestIntegrationProcessor(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.core
     def test_process(self) -> None:
+        """Registers a ComputedSignalProxy in NeuroData with merged annotations."""
         scenarios = [
             Scenario(
                 name="no_custom_annotations",

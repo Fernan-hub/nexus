@@ -28,6 +28,7 @@ class TestOperationNode(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_compute(self) -> None:
+        """Loads inputs from proxies, builds data input, calls apply, returns output."""
         signal_in = MagicMock()
         signal_out = MagicMock()
         self.proxy.load.return_value = signal_in
@@ -49,6 +50,7 @@ class TestOperationNode(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_compute_caches_result(self) -> None:
+        """Returns the same result on repeated calls; apply is not called again."""
         self.proxy.load.return_value = MagicMock()
         self.strategy.apply.return_value = [MagicMock()]
         node = OperationNode(
@@ -65,6 +67,7 @@ class TestOperationNode(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.core
     def test_compute_with_multiple_input_groups(self) -> None:
+        """Passes all named proxy groups to data_input_type with multiple groups."""
         proxy_a = MagicMock(spec=SignalProxy)
         signal_a = MagicMock()
         proxy_a.load.return_value = signal_a
@@ -133,6 +136,7 @@ class TestIntegrationOperationNode(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.core
     def test_compute(self) -> None:
+        """Returns the actual signal from a real proxy on end-to-end compute."""
         result = self.node.compute()
 
         self.assertEqual(len(result), 1)
@@ -141,6 +145,7 @@ class TestIntegrationOperationNode(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.core
     def test_compute_caches_real_result(self) -> None:
+        """Returns the same list on repeated compute calls; strategy not re-run."""
         first = self.node.compute()
         second = self.node.compute()
 

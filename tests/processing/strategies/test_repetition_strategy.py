@@ -72,6 +72,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns RepetitionStrategyFilterCriteria as filter_criteria_type."""
         strategy = RepetitionStrategy(repetitions=1)
 
         self.assertIs(strategy.filter_criteria_type, RepetitionStrategyFilterCriteria)
@@ -79,6 +80,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns RepetitionStrategyProxyInput as proxy_input_type."""
         strategy = RepetitionStrategy(repetitions=1)
 
         self.assertIs(strategy.proxy_input_type, RepetitionStrategyProxyInput)
@@ -86,6 +88,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns RepetitionStrategyDataInput as data_input_type."""
         strategy = RepetitionStrategy(repetitions=1)
 
         self.assertIs(strategy.data_input_type, RepetitionStrategyDataInput)
@@ -93,6 +96,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = RepetitionStrategy(repetitions=1)
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)

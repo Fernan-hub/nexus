@@ -83,6 +83,7 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_filter_criteria_type(self) -> None:
+        """Returns ConcatenationStrategyFilterCriteria as filter_criteria_type."""
         strategy = ConcatenationStrategy()
 
         self.assertIs(
@@ -92,6 +93,7 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_proxy_input_type(self) -> None:
+        """Returns ConcatenationStrategyProxyInput as proxy_input_type."""
         strategy = ConcatenationStrategy()
 
         self.assertIs(strategy.proxy_input_type, ConcatenationStrategyProxyInput)
@@ -99,6 +101,7 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_data_input_type(self) -> None:
+        """Returns ConcatenationStrategyDataInput as data_input_type."""
         strategy = ConcatenationStrategy()
 
         self.assertIs(strategy.data_input_type, ConcatenationStrategyDataInput)
@@ -106,6 +109,7 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_input_types_share_field_names(self) -> None:
+        """All three input type properties share identical field names."""
         strategy = ConcatenationStrategy()
         filter_fields = {
             f.name for f in dataclasses.fields(strategy.filter_criteria_type)
