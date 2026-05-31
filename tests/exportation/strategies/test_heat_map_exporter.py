@@ -5,9 +5,12 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, call, patch
 
+import pandas as pd
 import pytest
 
 from nexus.analysis.results.matrix_result import MatrixElement, MatrixResult
+from nexus.analysis.results.scalar_result import ScalarResult
+from nexus.analysis.results.vector_result import VectorResult
 from nexus.exportation.strategies.heat_map_exporter import (
     HeatMapExporter,
     HeatMapExporterConfig,
@@ -175,6 +178,28 @@ class TestHeatMapExporter(unittest.TestCase):
                 mock_plt.tight_layout.assert_has_calls(
                     scenario.expected.calls["tight_layout"]
                 )
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_export_scalar_result_raises_not_implemented(self) -> None:
+        """Test that export_scalar_result raises NotImplementedError."""
+        exporter = HeatMapExporter(HeatMapExporterConfig(output_file_path="out.png"))
+        scalar_result = ScalarResult(algorithm="entropy", value=1.0, label="H")
+
+        with self.assertRaises(NotImplementedError):
+            exporter.export_scalar_result(scalar_result)
+
+    @pytest.mark.unit
+    @pytest.mark.strategy
+    def test_export_vector_result_raises_not_implemented(self) -> None:
+        """Test that export_vector_result raises NotImplementedError."""
+        exporter = HeatMapExporter(HeatMapExporterConfig(output_file_path="out.png"))
+        vector_result = VectorResult(
+            algorithm="mutual_info", vector=pd.DataFrame({"mi": [0.1]})
+        )
+
+        with self.assertRaises(NotImplementedError):
+            exporter.export_vector_result(vector_result)
 
     @pytest.mark.unit
     @pytest.mark.strategy
