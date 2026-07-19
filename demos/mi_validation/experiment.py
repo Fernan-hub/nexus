@@ -22,8 +22,8 @@ OUTPUT_DIR_PATH = Path(__file__).parent / "output"
 OUTPUT_DATA_DIR_PATH = OUTPUT_DIR_PATH / "data"
 OUTPUT_PLOT_DIR_PATH = OUTPUT_DIR_PATH / "plots"
 
-# Column layout: identical_1, identical_2 (same binary sequence), independent (different seed).
-# Expected MI: identical pair H(X) ~= 0.69 nats; any pair with independent ~= 0 nats.
+# Columns: identical_1, identical_2 (same binary sequence), independent (different seed)
+# Expected MI: identical pair H(X) ~= 0.69 nats; any pair with independent ~= 0 nats
 SIGNAL_NAMES = ["identical_1", "identical_2", "independent"]
 
 # Loading phase - one column per proxy so each signal gets its own annotation
