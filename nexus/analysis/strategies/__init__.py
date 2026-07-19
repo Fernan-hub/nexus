@@ -1,3 +1,5 @@
+"""Analysis strategy implementations for information-theoretic measures."""
+
 from nexus.analysis.strategies.cross_entropy_strategy import CrossEntropyStrategy
 from nexus.analysis.strategies.entropy_strategy import EntropyStrategy
 from nexus.analysis.strategies.joint_entropy_strategy import JointEntropyStrategy

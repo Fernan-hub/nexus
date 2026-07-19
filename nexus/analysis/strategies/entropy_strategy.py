@@ -1,3 +1,5 @@
+"""Analysis strategy for computing (conditional) entropy over a set of signals."""
+
 from dataclasses import dataclass
 
 from neo.core.dataobject import DataObject
@@ -12,17 +14,46 @@ from nexus.analysis.results.vector_result import VectorResult
 
 @dataclass
 class EntropyStrategyFilterCriteria(FilterCriteria):
+    """Filter criteria for selecting signals used in entropy computation.
+
+    Parameters
+    ----------
+    data : Criteria or None, optional
+        Criteria for selecting the signals whose entropy is computed.
+    cond : Criteria or None, optional
+        Criteria for selecting the conditioning signal. When provided,
+        conditional entropy H(data | cond) is computed.
+    """
+
     data: Criteria | None = None
     cond: Criteria | None = None
 
 
 @dataclass
 class EntropyStrategyDataInput:
+    """Data input container for entropy computation.
+
+    Parameters
+    ----------
+    data : list[DataObject]
+        Signals whose entropy is computed.
+    cond : list[DataObject] or None, optional
+        Conditioning signal. When provided, conditional entropy is computed.
+    """
+
     data: list[DataObject]
     cond: list[DataObject] | None = None
 
 
 class EntropyStrategy(EstimatorBasedAnalysisStrategy):
+    """Analysis strategy that computes (conditional) entropy for each input signal.
+
+    Parameters
+    ----------
+    config : EntropyConfig
+        Estimator configuration specifying the estimation approach.
+    """
+
     _ALGORITHM_NAME = "entropy"
 
     def __init__(self, config: EntropyConfig) -> None:
@@ -30,10 +61,24 @@ class EntropyStrategy(EstimatorBasedAnalysisStrategy):
 
     @property
     def filter_criteria_type(self) -> type[EntropyStrategyFilterCriteria]:
+        """Return the filter criteria type for entropy analysis.
+
+        Returns
+        -------
+        type[EntropyStrategyFilterCriteria]
+            The criteria class used to select input signals.
+        """
         return EntropyStrategyFilterCriteria
 
     @property
     def data_input_type(self) -> type[EntropyStrategyDataInput]:
+        """Return the data input type for entropy analysis.
+
+        Returns
+        -------
+        type[EntropyStrategyDataInput]
+            The data input class for this strategy.
+        """
         return EntropyStrategyDataInput
 
     def _compute_joint_entropy(
@@ -65,6 +110,18 @@ class EntropyStrategy(EstimatorBasedAnalysisStrategy):
         return "cond_entropy"
 
     def run_analysis(self, data_input: EntropyStrategyDataInput) -> VectorResult:
+        """Compute entropy (or conditional entropy) for each signal in ``data``.
+
+        Parameters
+        ----------
+        data_input : EntropyStrategyDataInput
+            Loaded signals and optional conditioning signal.
+
+        Returns
+        -------
+        VectorResult
+            A VectorResult whose DataFrame contains one entropy value per signal.
+        """
         results_list = [
             self._get_estimator_result(data, data_input.cond)
             for data in data_input.data

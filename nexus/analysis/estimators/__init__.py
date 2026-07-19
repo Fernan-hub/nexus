@@ -1,3 +1,5 @@
+"""Estimator configuration classes."""
+
 from nexus.analysis.estimators.entropy import (
     DiscreteEntropyConfig,
     KernelEntropyConfig,
