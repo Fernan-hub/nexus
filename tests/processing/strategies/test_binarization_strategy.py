@@ -25,7 +25,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus binary=True."""
+        """Test each proxy gets its own NodeDefinition with binary=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -50,7 +50,7 @@ class TestBinarizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_apply_raises_type_error_when_input_is_not_analog_signal(self) -> None:
-        """Test that apply raises TypeError when a SpikeTrain is passed instead of AnalogSignal."""
+        """Test apply raises TypeError when input is a SpikeTrain not AnalogSignal."""
         spike_train = SpikeTrain(np.array([0.1]) * pq.s, t_stop=1.0 * pq.s)
         strategy = BinarizationStrategy()
         input_data = BinarizationStrategyDataInput(inputs=[spike_train])
@@ -103,7 +103,7 @@ class TestIntegrationBinarizationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply maps values above threshold to 1 and values at or below to 0."""
+        """Test apply maps values above threshold to 1 and values at or below to 0."""
         scenarios = [
             Scenario(
                 name="threshold at 0 mV",
@@ -172,7 +172,7 @@ class TestIntegrationBinarizationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply_preserves_metadata(self) -> None:
-        """Test that apply preserves sampling rate, t_start, name, and outputs dimensionless units."""
+        """Test apply preserves metadata and outputs dimensionless units."""
         signal = AnalogSignal(
             np.array([0.0, 1.0, 2.0]) * pq.mV,
             sampling_rate=30.0 * pq.kHz,

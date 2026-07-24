@@ -35,7 +35,7 @@ class TestEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.entropy.DiscreteEntropyEstimator")
     def test_run_analysis(self, mock_estimator_class: MagicMock) -> None:
-        """Test that run_analysis calls the estimator once per signal and returns a VectorResult."""
+        """Test run_analysis calls estimator per signal and returns a VectorResult."""
         scenarios = [
             Scenario(
                 name="single signal",
@@ -97,7 +97,7 @@ class TestEntropyStrategy(unittest.TestCase):
     def test_run_analysis_cond_column_name(
         self, mock_estimator_class: MagicMock
     ) -> None:
-        """Test that the cond column is named after the cond signal, falling back to a default."""
+        """Test cond column name comes from cond signal, falling back to a default."""
         scenarios = [
             Scenario(
                 name="named cond signal",
@@ -175,7 +175,7 @@ class TestIntegrationEntropyStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_entropy_of_uniform_binary_signal(self) -> None:
-        """A perfectly uniform binary signal has entropy = ln(2) nats (infomeasure default base)."""
+        """Uniform binary signal has entropy = ln(2) nats (infomeasure default base)."""
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 
@@ -202,7 +202,7 @@ class TestIntegrationEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_entropy_produces_finite_result(self) -> None:
-        """KernelEntropyConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        """KernelEntropyConfig wires up and the strategy returns a finite value."""
         rng = np.random.default_rng(0)
         sig = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
 
@@ -217,7 +217,7 @@ class TestIntegrationEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_conditional_entropy_produces_finite_result(self) -> None:
-        """KernelEntropyConfig conditional path wires up correctly and returns a finite value."""
+        """KernelEntropyConfig conditional path wires up and returns a finite value."""
         rng = np.random.default_rng(1)
         sig = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         cond = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)

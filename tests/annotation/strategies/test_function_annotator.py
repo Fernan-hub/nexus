@@ -22,7 +22,7 @@ class TestFunctionAnnotator(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_annotate(self) -> None:
-        """Test that annotate applies ann_func to each item and updates its annotations."""
+        """Test that annotate applies ann_func to each item and updates annotations."""
         scenarios = [
             Scenario(
                 name="single item with fixed annotation",

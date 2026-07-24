@@ -89,7 +89,7 @@ class TestMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.mutual_information.DiscreteMIEstimator")
     def test_run_analysis_labels(self, mock_estimator_class: MagicMock) -> None:
-        """Test that signal names are used as labels, falling back to index when absent."""
+        """Test signal names are used as labels, falling back to index when absent."""
         scenarios = [
             Scenario(
                 name="named signals",
@@ -186,12 +186,12 @@ class TestMutualInformationStrategy(unittest.TestCase):
 
 
 class TestIntegrationMutualInformationStrategy(unittest.TestCase):
-    """Integration tests for MutualInformationStrategy against real infomeasure estimators."""
+    """Integration tests for MutualInformationStrategy against real estimators."""
 
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_mi_of_signal_with_itself_equals_entropy(self) -> None:
-        """MI(X, X) = H(X): mutual information of a signal with itself equals its entropy."""
+        """MI(X, X) = H(X): MI of a signal with itself equals its entropy."""
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 
@@ -240,7 +240,7 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_mi_produces_finite_result(self) -> None:
-        """KernelMutualInformationConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        """KernelMutualInformationConfig wires up and returns a finite value."""
         rng = np.random.default_rng(1)
         sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
@@ -258,7 +258,7 @@ class TestIntegrationMutualInformationStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_conditional_mi_produces_finite_result(self) -> None:
-        """KernelMutualInformationConfig conditional path wires up correctly and returns a finite value."""
+        """KernelMI conditional config wires up and returns a finite value."""
         rng = np.random.default_rng(2)
         sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)

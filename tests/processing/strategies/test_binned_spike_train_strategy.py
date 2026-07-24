@@ -24,7 +24,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus binned=True."""
+        """Test each proxy gets its own NodeDefinition with binned=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "spike": True}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -50,7 +50,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.processing.strategies.binned_spike_train_strategy.BinnedSpikeTrain")
     def test_apply(self, mock_bst_class: MagicMock) -> None:
-        """Test that apply returns AnalogSignal with binary values derived from BinnedSpikeTrain."""
+        """Test apply returns binary AnalogSignal derived from BinnedSpikeTrain."""
         mock_bst_instance = MagicMock()
         mock_bst_instance.to_bool_array.return_value = np.array(
             [[True, False, True, False]]
@@ -79,7 +79,7 @@ class TestBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_apply_raises_type_error_when_input_is_not_spike_train(self) -> None:
-        """Test that apply raises TypeError when an AnalogSignal is passed instead of SpikeTrain."""
+        """Test apply raises TypeError when input is an AnalogSignal not SpikeTrain."""
         signal = AnalogSignal(
             np.array([0.0, 1.0]) * pq.mV,
             sampling_rate=1.0 * pq.kHz,
@@ -137,7 +137,7 @@ class TestIntegrationBinnedSpikeTrainStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply produces a binary AnalogSignal with 1 in bins that contain a spike."""
+        """Test apply outputs 1 in bins containing a spike and 0 elsewhere."""
         spike_train = SpikeTrain(
             np.array([0.25]) * pq.s,  # one spike at 0.25 s, inside [0, 0.5) bin
             t_stop=1.0 * pq.s,

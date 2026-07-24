@@ -34,7 +34,7 @@ class TestJointEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.entropy.DiscreteEntropyEstimator")
     def test_run_analysis(self, mock_estimator_class: MagicMock) -> None:
-        """Test that run_analysis calls the estimator once and returns a ScalarResult."""
+        """Test that run_analysis calls estimator once and returns a ScalarResult."""
         scenarios = [
             Scenario(
                 name="two signals",
@@ -130,7 +130,7 @@ class TestJointEntropyStrategy(unittest.TestCase):
 
 
 class TestIntegrationJointEntropyStrategy(unittest.TestCase):
-    """Integration tests for JointEntropyStrategy against real infomeasure estimators."""
+    """Integration tests for JointEntropyStrategy against real estimators."""
 
     @pytest.mark.integration
     @pytest.mark.strategy

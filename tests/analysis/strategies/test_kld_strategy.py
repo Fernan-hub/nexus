@@ -90,7 +90,7 @@ class TestKLDStrategy(unittest.TestCase):
     def test_run_analysis_labels(
         self, _mock_estimator_class: MagicMock, mock_im: MagicMock
     ) -> None:
-        """Test that signal names are used as labels, falling back to index when absent."""
+        """Test signal names are used as labels, falling back to index when absent."""
         scenarios = [
             Scenario(
                 name="named signals",

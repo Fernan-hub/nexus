@@ -24,7 +24,7 @@ class TestStandardizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus standardized=True."""
+        """Test each proxy gets its own NodeDefinition with standardized=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -93,7 +93,7 @@ class TestIntegrationStandardizationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply produces a signal with zero mean and unit standard deviation."""
+        """Test apply produces a signal with zero mean and unit standard deviation."""
         signal = AnalogSignal(
             np.array([0.0, 1.0, 2.0, 3.0, 4.0]) * pq.mV,
             sampling_rate=1.0 * pq.kHz,

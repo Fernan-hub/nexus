@@ -25,7 +25,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus filtered=True."""
+        """Test each proxy gets its own NodeDefinition with filtered=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -53,7 +53,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @patch("nexus.processing.strategies.bandpass_filter_strategy.filtfilt")
     @patch("nexus.processing.strategies.bandpass_filter_strategy.butter")
     def test_apply(self, mock_butter: MagicMock, mock_filtfilt: MagicMock) -> None:
-        """Test that apply returns AnalogSignal with same metadata as input using mocked scipy."""
+        """Test apply returns AnalogSignal with input metadata (mocked scipy)."""
         mock_butter.return_value = (np.array([1.0, 0.5]), np.array([1.0, -0.5]))
         filtered_array = np.array([[0.5], [1.5], [2.5]])
         mock_filtfilt.return_value = filtered_array
@@ -82,7 +82,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_apply_raises_type_error_when_input_is_not_analog_signal(self) -> None:
-        """Test that apply raises TypeError when a SpikeTrain is passed instead of AnalogSignal."""
+        """Test apply raises TypeError when input is a SpikeTrain not AnalogSignal."""
         spike_train = SpikeTrain(np.array([0.1, 0.2]) * pq.s, t_stop=1.0 * pq.s)
         strategy = BandpassFilterStrategy()
         input_data = BandpassFilterStrategyDataInput(inputs=[spike_train])
@@ -93,7 +93,7 @@ class TestBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_apply_raises_value_error_when_frequency_exceeds_nyquist(self) -> None:
-        """Test that apply raises ValueError when either cutoff frequency exceeds Nyquist."""
+        """Test apply raises ValueError when either cutoff frequency exceeds Nyquist."""
         scenarios = [
             Scenario(
                 name="low frequency exceeds Nyquist",
@@ -179,7 +179,7 @@ class TestIntegrationBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply returns AnalogSignal with same length and metadata as the input."""
+        """Test apply returns AnalogSignal with same length and metadata as input."""
         strategy = BandpassFilterStrategy(low=50, high=200)
         input_data = BandpassFilterStrategyDataInput(inputs=[self.signal])
 
@@ -196,7 +196,7 @@ class TestIntegrationBandpassFilterStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply_attenuates_out_of_band_signal(self) -> None:
-        """Test that the in-band signal retains power while the out-of-band signal is attenuated."""
+        """Test in-band signal retains power while out-of-band signal is attenuated."""
         scenarios = [
             Scenario(
                 name="50–200 Hz bandpass: in-band 100 Hz vs out-of-band 2000 Hz",

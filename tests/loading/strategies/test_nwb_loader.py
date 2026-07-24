@@ -38,7 +38,7 @@ class TestNWBLoader(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.loading.strategies.nwb_loader.NWBIO")
     def test_load_data(self, mock_io_class: MagicMock) -> None:
-        """Test that load_data opens the correct file with NWBIO and reads all blocks lazily."""
+        """Test load_data opens the file with NWBIO and reads all blocks lazily."""
         proxy = MagicMock(spec=BaseProxy)
         mock_segment = MagicMock()
         mock_segment.analogsignals = [proxy]
@@ -74,7 +74,7 @@ class TestIntegrationNWBLoader(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_load_data(self) -> None:
-        """Test that load_data returns one AnalogSignal per channel with correct values."""
+        """Test load_data returns one AnalogSignal per channel with correct values."""
         scenarios = [
             Scenario(
                 name="single signal",

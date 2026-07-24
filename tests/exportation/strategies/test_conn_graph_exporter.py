@@ -39,7 +39,7 @@ class TestConnGraphExporter(unittest.TestCase):
     def test_export_matrix_result_adds_all_nodes(
         self, _mock_layout: MagicMock, mock_draw: MagicMock, _mock_plt: MagicMock
     ) -> None:
-        """Test that all distinct row and column values from the matrix are added as nodes."""
+        """Test that all distinct row and column values are added as nodes."""
         matrix_result = MatrixResult(
             algorithm="te",
             matrix=[
@@ -64,7 +64,7 @@ class TestConnGraphExporter(unittest.TestCase):
     def test_export_matrix_result_only_adds_edges_above_threshold(
         self, _mock_layout: MagicMock, mock_draw: MagicMock, _mock_plt: MagicMock
     ) -> None:
-        """Test that only edges with value strictly greater than threshold are included."""
+        """Test that only edges with value strictly above threshold are included."""
         scenarios = [
             Scenario(
                 name="threshold below value: edge included",
@@ -137,7 +137,7 @@ class TestConnGraphExporter(unittest.TestCase):
     def test_export_matrix_result_uses_plt_configuration(
         self, _mock_layout: MagicMock, _mock_draw: MagicMock, mock_plt: MagicMock
     ) -> None:
-        """Test that plt.figure, plt.title, and plt.tight_layout are called only when their config options are set."""
+        """Test plt.figure, plt.title, plt.tight_layout called per config options."""
         scenarios = [
             Scenario(
                 name="fig_size, title, and tight_layout enabled",
@@ -225,7 +225,7 @@ class TestConnGraphExporter(unittest.TestCase):
     def test_export_matrix_result_saves_and_clears_figure(
         self, _mock_layout: MagicMock, _mock_draw: MagicMock, mock_plt: MagicMock
     ) -> None:
-        """Test that export_matrix_result saves to the configured path and clears the figure."""
+        """Test export_matrix_result saves to configured path and clears the figure."""
         exporter = ConnGraphExporter(
             ConnGraphExporterConfig(output_file_path="graph.png")
         )
@@ -249,7 +249,7 @@ class TestIntegrationConnGraphExporter(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_export_matrix_result(self) -> None:
-        """Test that export_matrix_result writes a non-empty file with and without edges above threshold."""
+        """Test export_matrix_result writes a non-empty file with and without edges."""
         scenarios = [
             Scenario(
                 name="with edges above threshold",

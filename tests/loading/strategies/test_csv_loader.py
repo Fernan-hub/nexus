@@ -32,7 +32,7 @@ class TestCSVLoader(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.loading.strategies.csv_loader.AsciiSignalIO")
     def test_load_data(self, mock_io_class: MagicMock) -> None:
-        """Test that load_data passes every config field to AsciiSignalIO and returns its signals."""
+        """Test load_data passes config fields to AsciiSignalIO and returns signals."""
         analog = MagicMock(spec=AnalogSignal)
         mock_segment = MagicMock()
         mock_segment.analogsignals = [analog]
@@ -143,7 +143,7 @@ class TestCSVLoader(unittest.TestCase):
     def test_load_data_combines_analog_and_irregular_signals(
         self, mock_io_class: MagicMock
     ) -> None:
-        """Test that load_data concatenates analogsignals and irregularlysampledsignals."""
+        """Test load_data concatenates analogsignals and irregularlysampledsignals."""
         analog = MagicMock(spec=AnalogSignal)
         irregular = MagicMock()
         mock_segment = MagicMock()

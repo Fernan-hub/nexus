@@ -96,7 +96,7 @@ class TestHeatMapExporter(unittest.TestCase):
     def test_export_matrix_result_axis_labels(
         self, _mock_sns: MagicMock, mock_plt: MagicMock
     ) -> None:
-        """Test that axis labels come from config when set, or fall back to result's row/col labels."""
+        """Test axis labels come from config or fall back to result's row/col labels."""
         scenarios = [
             Scenario(
                 name="labels from config",
@@ -137,7 +137,7 @@ class TestHeatMapExporter(unittest.TestCase):
     def test_export_matrix_result_uses_plt_configuration(
         self, _mock_sns: MagicMock, mock_plt: MagicMock
     ) -> None:
-        """Test that plt.title and plt.tight_layout are called only when their config options are set."""
+        """Test plt.title and plt.tight_layout are called per their config options."""
         scenarios = [
             Scenario(
                 name="title and tight_layout enabled",
@@ -208,7 +208,7 @@ class TestHeatMapExporter(unittest.TestCase):
     def test_export_matrix_result_saves_and_clears_figure(
         self, _mock_sns: MagicMock, mock_plt: MagicMock
     ) -> None:
-        """Test that export_matrix_result saves to the configured path and clears the figure."""
+        """Test export_matrix_result saves to configured path and clears the figure."""
         exporter = HeatMapExporter(HeatMapExporterConfig(output_file_path="out.png"))
 
         exporter.export_matrix_result(_make_matrix_result())
@@ -230,7 +230,7 @@ class TestIntegrationHeatMapExporter(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_export_matrix_result(self) -> None:
-        """Test that export_matrix_result writes a non-empty file for minimal and fully-configured exporters."""
+        """Test export_matrix_result writes a non-empty file for each config variant."""
         scenarios = [
             Scenario(
                 name="minimal config",

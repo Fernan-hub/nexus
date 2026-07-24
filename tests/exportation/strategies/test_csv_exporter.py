@@ -46,7 +46,7 @@ class TestCSVExporter(unittest.TestCase):
     @pytest.mark.strategy
     @patch.object(CSVExporter, "_dataframe_to_csv")
     def test_export_scalar_result(self, mock_to_csv: MagicMock) -> None:
-        """Test that export_scalar_result wraps the scalar in a single-row DataFrame with the label as column."""
+        """Test export_scalar_result wraps scalar in a single-row DataFrame."""
         exporter = CSVExporter(CSVExporterConfig())
 
         exporter.export_scalar_result(_make_scalar_result())
@@ -61,7 +61,7 @@ class TestCSVExporter(unittest.TestCase):
     @pytest.mark.strategy
     @patch.object(CSVExporter, "_dataframe_to_csv")
     def test_export_vector_result(self, mock_to_csv: MagicMock) -> None:
-        """Test that export_vector_result passes the vector DataFrame directly to _dataframe_to_csv."""
+        """Test export_vector_result passes DataFrame directly to _dataframe_to_csv."""
         vector_result = _make_vector_result()
         exporter = CSVExporter(CSVExporterConfig())
 
@@ -75,7 +75,7 @@ class TestCSVExporter(unittest.TestCase):
     @pytest.mark.strategy
     @patch.object(CSVExporter, "_dataframe_to_csv")
     def test_export_matrix_result(self, mock_to_csv: MagicMock) -> None:
-        """Test that export_matrix_result passes a pivoted DataFrame with the row/col axis names from the result."""
+        """Test export_matrix_result passes a pivoted DataFrame with row/col names."""
         exporter = CSVExporter(CSVExporterConfig())
 
         exporter.export_matrix_result(_make_matrix_result())
@@ -101,7 +101,7 @@ class TestIntegrationCSVExporter(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_export_scalar_result(self) -> None:
-        """Test that export_scalar_result writes a single-row CSV with the correct value."""
+        """Test export_scalar_result writes a single-row CSV with the correct value."""
         output_path = str(self.temp_path / "scalar.csv")
         exporter = CSVExporter(CSVExporterConfig(output_file_path=output_path))
 

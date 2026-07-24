@@ -89,7 +89,7 @@ class TestTransferEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.analysis.estimators.transfer_entropy.DiscreteTEEstimator")
     def test_run_analysis_labels(self, mock_estimator_class: MagicMock) -> None:
-        """Test that signal names are used as labels, falling back to index when absent."""
+        """Test signal names are used as labels, falling back to index when absent."""
         scenarios = [
             Scenario(
                 name="named signals",
@@ -184,12 +184,12 @@ class TestTransferEntropyStrategy(unittest.TestCase):
 
 
 class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
-    """Integration tests for TransferEntropyStrategy against real infomeasure estimators."""
+    """Integration tests for TransferEntropyStrategy against real estimators."""
 
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_te_detects_causal_dependency(self) -> None:
-        """TE(X -> Y) is close to ln(2) nats when Y[t] = X[t-1] (perfect causal shift)."""
+        """TE(X->Y) ~= ln(2) nats when Y[t] = X[t-1] (perfect causal shift)."""
         rng = np.random.default_rng(42)
         x = rng.integers(0, 2, 500).astype(float)
         y = np.roll(x, 1)
@@ -225,7 +225,7 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
     def test_conditional_te_detects_causal_dependency_given_independent_signal(
         self,
     ) -> None:
-        """CTE(X->Y | Z) ~= ln(2) nats when Y[t] = X[t-1] and Z is independent: conditioning on an irrelevant signal does not suppress the detected transfer."""
+        """CTE(X->Y|Z) ~= ln(2) nats: independent Z does not suppress detected TE."""
         rng = np.random.default_rng(42)
         x = rng.integers(0, 2, 500).astype(float)
         y = np.roll(x, 1)
@@ -247,7 +247,7 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_te_produces_finite_result(self) -> None:
-        """KernelTransferEntropyConfig wires up correctly: the strategy runs without error and returns a finite value."""
+        """KernelTransferEntropyConfig wires up and returns a finite value."""
         rng = np.random.default_rng(1)
         sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
@@ -263,7 +263,7 @@ class TestIntegrationTransferEntropyStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @pytest.mark.slow
     def test_kernel_conditional_te_produces_finite_result(self) -> None:
-        """KernelTransferEntropyConfig conditional path wires up correctly and returns a finite value."""
+        """KernelTE conditional config wires up and returns a finite value."""
         rng = np.random.default_rng(2)
         sig_x = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)
         sig_y = AnalogSignal(rng.normal(0, 1, 100) * pq.mV, sampling_rate=1.0 * pq.kHz)

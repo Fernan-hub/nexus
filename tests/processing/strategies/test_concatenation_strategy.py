@@ -25,7 +25,7 @@ class TestConcatenationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that all proxies map to a single NodeDefinition and only common annotations are retained."""
+        """Test all proxies share one NodeDefinition with only common annotations."""
         scenarios = [
             Scenario(
                 name="partial common annotations: only shared keys retained",
@@ -140,7 +140,7 @@ class TestIntegrationConcatenationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply concatenates all signals into one with the summed number of samples."""
+        """Test apply concatenates all signals into one output signal."""
         strategy = ConcatenationStrategy()
         input_data = ConcatenationStrategyDataInput(inputs=[self.signal1, self.signal2])
 
@@ -158,7 +158,7 @@ class TestIntegrationConcatenationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply_sorts_by_t_start_before_concatenating(self) -> None:
-        """Test that apply correctly orders signals by t_start regardless of input order."""
+        """Test apply correctly orders signals by t_start regardless of input order."""
         strategy = ConcatenationStrategy()
         input_data = ConcatenationStrategyDataInput(inputs=[self.signal2, self.signal1])
 

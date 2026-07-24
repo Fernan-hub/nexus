@@ -93,7 +93,7 @@ class TestGeneratorAnnotator(unittest.TestCase):
     def test_annotate_raises_runtime_error_when_generator_exhausted_without_default(
         self,
     ) -> None:
-        """Test that annotate raises RuntimeError when the generator is exhausted and no default is set."""
+        """Test annotate raises RuntimeError: generator exhausted with no default."""
         gen = _make_gen([])
         strategy = GeneratorAnnotator(ann_gen=gen)
 

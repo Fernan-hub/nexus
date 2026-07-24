@@ -25,7 +25,7 @@ class TestNormalizationStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus normalized=True."""
+        """Test each proxy gets its own NodeDefinition with normalized=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -94,7 +94,7 @@ class TestIntegrationNormalizationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply scales signal values so the minimum equals low and maximum equals high."""
+        """Test apply scales values so min equals low and max equals high."""
         scenarios = [
             Scenario(
                 name="default range [0, 1] mV",
@@ -187,7 +187,7 @@ class TestIntegrationNormalizationStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply_preserves_metadata(self) -> None:
-        """Test that apply preserves sampling rate, t_start, name, and output units equal high.units."""
+        """Test apply preserves metadata and sets units to high.units."""
         signal = AnalogSignal(
             np.array([1.0, 2.0, 3.0]) * pq.mV,
             sampling_rate=30.0 * pq.kHz,

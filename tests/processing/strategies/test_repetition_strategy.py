@@ -25,7 +25,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus repeated=True."""
+        """Test each proxy gets its own NodeDefinition with repeated=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -50,7 +50,7 @@ class TestRepetitionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_init_raises_value_error_when_repetitions_is_invalid(self) -> None:
-        """Test that constructing RepetitionStrategy with a non-positive value raises ValueError."""
+        """Test init raises ValueError for a non-positive repetition count."""
         scenarios = [
             Scenario(
                 name="zero repetitions",
@@ -122,7 +122,7 @@ class TestIntegrationRepetitionStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply returns a signal with N × len(input) samples repeated cyclically and N × duration."""
+        """Test apply repeats input cyclically N times over N x duration."""
         scenarios = [
             Scenario(
                 name="2 repetitions",

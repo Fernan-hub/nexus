@@ -162,7 +162,7 @@ class TestIntegrationCrossEntropyStrategy(unittest.TestCase):
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_cross_entropy_of_identical_distributions_equals_entropy(self) -> None:
-        """H(P, P) = H(P): cross-entropy is the entropy when both distributions are equal."""
+        """H(P, P) = H(P): cross-entropy equals entropy for identical distributions."""
         data = np.tile([0.0, 1.0], 50)
         sig = AnalogSignal(data * pq.mV, sampling_rate=1.0 * pq.kHz)
 

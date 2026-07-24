@@ -25,7 +25,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_infer_execution_plan(self) -> None:
-        """Test that each proxy gets its own NodeDefinition with its annotations plus spike=True."""
+        """Test each proxy gets its own NodeDefinition with spike=True added."""
         proxy1 = MagicMock(spec=SignalProxy)
         proxy1.annotations = {"model": "efish", "channel": "A"}
         proxy2 = MagicMock(spec=SignalProxy)
@@ -52,7 +52,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.strategy
     @patch("nexus.processing.strategies.spike_extraction_strategy.threshold_detection")
     def test_apply(self, mock_threshold_detection: MagicMock) -> None:
-        """Test that apply returns the SpikeTrain from threshold_detection with name set from input."""
+        """Test apply returns threshold_detection's SpikeTrain with name from input."""
         expected_spike_train = SpikeTrain(
             np.array([0.1, 0.3]) * pq.s,
             t_stop=1.0 * pq.s,
@@ -77,7 +77,7 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
     @pytest.mark.unit
     @pytest.mark.strategy
     def test_apply_raises_type_error_when_input_is_not_analog_signal(self) -> None:
-        """Test that apply raises TypeError when a SpikeTrain is passed instead of AnalogSignal."""
+        """Test apply raises TypeError when input is a SpikeTrain not AnalogSignal."""
         spike_train = SpikeTrain(np.array([0.1]) * pq.s, t_stop=1.0 * pq.s)
         strategy = SpikeExtractionStrategy()
         input_data = SpikeExtractionStrategyDataInput(inputs=[spike_train])
@@ -127,12 +127,12 @@ class TestSpikeExtractionStrategy(unittest.TestCase):
 
 
 class TestIntegrationSpikeExtractionStrategy(unittest.TestCase):
-    """Integration tests for SpikeExtractionStrategy with real elephant threshold detection."""
+    """Integration tests for SpikeExtractionStrategy with real elephant detection."""
 
     @pytest.mark.integration
     @pytest.mark.strategy
     def test_apply(self) -> None:
-        """Test that apply returns a SpikeTrain whose spike count matches crossings of the threshold."""
+        """Test apply spike count matches threshold crossings in the signal."""
         scenarios = [
             Scenario(
                 name="signal with two upward crossings above threshold",
