@@ -1,3 +1,5 @@
+"""Concrete processing strategies and their configuration dataclasses."""
+
 from nexus.processing.strategies.bandpass_filter_strategy import (
     BandpassFilterStrategy,
 )
