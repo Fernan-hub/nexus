@@ -1,3 +1,5 @@
+"""DataLoader strategy for reading analog signals from ASCII/CSV files via Neo."""
+
 from dataclasses import dataclass, field
 
 
@@ -13,6 +15,8 @@ from nexus.loading.models import DataLoaderConfig
 
 @dataclass
 class CSVLoaderConfig(DataLoaderConfig):
+    """Configuration for CSVLoader; maps directly to AsciiSignalIO arguments."""
+
     sampling_rate: UnitQuantity
     units: UnitQuantity
     t_start: UnitTime = field(default_factory=lambda: 0.0 * pq.s)
@@ -24,10 +28,19 @@ class CSVLoaderConfig(DataLoaderConfig):
 
 
 class CSVLoader(DataLoader):
+    """Loads analog signals from a delimited ASCII file using Neo's AsciiSignalIO."""
+
     def __init__(self, config: CSVLoaderConfig) -> None:
         super().__init__(config)
 
     def load_data(self) -> list[BaseProxy] | list[DataObject]:
+        """Read all analog signals from the CSV file and return them as a flat list.
+
+        Returns
+        -------
+        list[BaseProxy] | list[DataObject]
+            All analog and irregularly sampled signals found in the file.
+        """
         reader = AsciiSignalIO(
             filename=self._config.file_path,
             delimiter=self._config.delimiter,
